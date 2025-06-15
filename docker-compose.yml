@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  chronoflow:
+    build: .
+    ports:
+      - "3030:3030"
+    env_file:
+      - .env.docker
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3030
