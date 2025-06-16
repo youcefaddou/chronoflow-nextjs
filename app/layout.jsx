@@ -12,7 +12,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
 	return (
 		<html lang="fr">
-			<body className="antialiased" suppressHydrationWarning={true}>
+			<body className="antialiased" suppressHydrationWarnings={true}>
 				<I18nProvider>
 					<AuthProvider>
 						<div className="min-h-screen flex flex-col">

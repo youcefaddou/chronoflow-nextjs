@@ -168,7 +168,7 @@ export default function Sidebar({ isMobileOpen, onMobileClose, user }) {
 								{user.email?.[0]?.toUpperCase() || user.name?.[0]?.toUpperCase() || 'U'}
 							</div>
 							<div className={`
-								flex flex-col transition-all duration-300 ease-in-out
+								flex flex-col transition-all duration-300 ml-1 ease-in-out
 								${isCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'}
 							`}>
 								<span className="text-sm font-medium text-white truncate max-w-[180px]">

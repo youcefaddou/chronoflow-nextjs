@@ -1,20 +1,50 @@
 import { NextResponse } from 'next/server'
+import jwt from 'jsonwebtoken'
+import { connectMongo } from '../../../../lib/mongoose.js'
+import User from '../../../../models/user.js'
 
-export async function GET() {
+async function getUser(request) {
   try {
-    // Simuler la récupération des données du profil utilisateur
-    // Dans un vrai projet, vous récupéreriez les données depuis votre base de données
-    const userProfile = {
-      id: 'user_123',
-      username: 'John Doe',
-      email: 'john.doe@example.com',
-      createdAt: new Date('2024-01-15').toISOString(),
-      lastSignInAt: new Date().toISOString(),
+    const token = request.cookies.get('token')?.value
+    if (!token) {
+      throw new Error('No token found')
     }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret')
+    return { id: decoded.userId }
+  } catch (error) {
+    console.error('Auth error:', error)
+    throw new Error('Invalid token')
+  }
+}
 
-    return NextResponse.json(userProfile, { status: 200 })
+export async function GET(request) {
+  try {
+    await connectMongo()
+    const user = await getUser(request)
+    
+    // Récupérer les données du profil utilisateur depuis la base de données
+    const userProfile = await User.findById(user.id).select('username email createdAt lastSignInAt')
+    
+    if (!userProfile) {
+      return NextResponse.json(
+        { error: 'Utilisateur non trouvé' },
+        { status: 404 }
+      )
+    }    return NextResponse.json({
+      id: userProfile._id,
+      username: userProfile.username,
+      email: userProfile.email,
+      createdAt: userProfile.createdAt.toISOString(),
+      lastSignInAt: userProfile.lastSignInAt ? userProfile.lastSignInAt.toISOString() : null,
+    }, { status: 200 })
   } catch (error) {
     console.error('Error fetching user profile:', error)
+    if (error.message === 'Invalid token' || error.message === 'No token found') {
+      return NextResponse.json(
+        { error: 'Non autorisé' },
+        { status: 401 }
+      )
+    }
     return NextResponse.json(
       { error: 'Erreur lors du chargement du profil' },
       { status: 500 }
@@ -24,6 +54,8 @@ export async function GET() {
 
 export async function PUT(request) {
   try {
+    await connectMongo()
+    const user = await getUser(request)
     const body = await request.json()
     const { username } = body
 
@@ -42,25 +74,38 @@ export async function PUT(request) {
       )
     }
 
-    // Simuler la mise à jour du profil
-    // Dans un vrai projet, vous mettriez à jour les données dans votre base de données
-    console.log('Simulation: Mise à jour du nom d\'utilisateur:', username.trim())
-    
-    // Simuler un délai de traitement
-    await new Promise(resolve => setTimeout(resolve, 500))
-    
+    // Mettre à jour le nom d'utilisateur dans la base de données
+    const updatedUser = await User.findByIdAndUpdate(
+      user.id,
+      { username: username.trim() },
+      { new: true, select: 'username email createdAt lastSignInAt' }
+    )
+
+    if (!updatedUser) {
+      return NextResponse.json(
+        { error: 'Utilisateur non trouvé' },
+        { status: 404 }
+      )
+    }
+
     const updatedProfile = {
-      id: 'user_123',
-      username: username.trim(),
-      email: 'john.doe@example.com',
-      createdAt: new Date('2024-01-15').toISOString(),
-      lastSignInAt: new Date().toISOString(),
+      id: updatedUser._id,
+      username: updatedUser.username,
+      email: updatedUser.email,
+      createdAt: updatedUser.createdAt.toISOString(),
+      lastSignInAt: updatedUser.lastSignInAt ? updatedUser.lastSignInAt.toISOString() : null,
       updatedAt: new Date().toISOString(),
     }
 
     return NextResponse.json(updatedProfile, { status: 200 })
   } catch (error) {
     console.error('Error updating user profile:', error)
+    if (error.message === 'Invalid token' || error.message === 'No token found') {
+      return NextResponse.json(
+        { error: 'Non autorisé' },
+        { status: 401 }
+      )
+    }
     return NextResponse.json(
       { error: 'Erreur lors de la mise à jour du profil' },
       { status: 500 }

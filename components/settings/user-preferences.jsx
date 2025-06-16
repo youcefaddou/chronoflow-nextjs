@@ -2,13 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Globe, Moon, Sun, Bell, BellOff } from 'lucide-react'
+import { Globe, Bell, BellOff } from 'lucide-react'
 
 export default function UserPreferences() {
   const { t, i18n } = useTranslation()
   const [preferences, setPreferences] = useState({
     language: 'fr',
-    theme: 'light',
     notifications: true
   })
   const [isLoading, setIsLoading] = useState(false)
@@ -16,15 +15,13 @@ export default function UserPreferences() {
   const [messageType, setMessageType] = useState('')
 
   useEffect(() => {
-    // Charger les préférences depuis le localStorage ou l'API
+    // Charger les préférences depuis le localStorage
     const loadPreferences = () => {
       const savedLanguage = i18n.language || 'fr'
-      const savedTheme = localStorage.getItem('theme') || 'light'
       const savedNotifications = localStorage.getItem('notifications') !== 'false'
       
       setPreferences({
         language: savedLanguage,
-        theme: savedTheme,
         notifications: savedNotifications
       })
     }
@@ -78,23 +75,6 @@ export default function UserPreferences() {
     } finally {
       setIsLoading(false)
     }
-  }
-
-  const handleThemeChange = (newTheme) => {
-    setPreferences(prev => ({ ...prev, theme: newTheme }))
-    localStorage.setItem('theme', newTheme)
-    
-    // Appliquer le thème immédiatement
-    if (newTheme === 'dark') {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-    
-    showMessage(
-      t('settings.items.themeChanged') || 'Thème modifié avec succès',
-      'success'
-    )
   }
 
   const handleNotificationsChange = (enabled) => {
@@ -162,7 +142,7 @@ export default function UserPreferences() {
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
-                  🇫🇷 Français
+                  Français
                 </button>
                 <button
                   onClick={() => handleLanguageChange('en')}
@@ -173,52 +153,7 @@ export default function UserPreferences() {
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
-                  🇺🇸 English
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Theme Selection */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
-        <div className="flex items-start gap-3">
-          {preferences.theme === 'dark' ? (
-            <Moon className="h-5 w-5 text-purple-600 mt-0.5" />
-          ) : (
-            <Sun className="h-5 w-5 text-yellow-600 mt-0.5" />
-          )}
-          <div className="flex-1">
-            <h3 className="font-medium text-gray-900">
-              {t('settings.items.theme')}
-            </h3>
-            <p className="text-sm text-gray-600 mt-1">
-              {t('settings.items.themeDesc') || 'Personnalisez l\'apparence de l\'interface'}
-            </p>
-            <div className="mt-3">
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handleThemeChange('light')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                    preferences.theme === 'light'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  <Sun className="h-4 w-4" />
-                  {t('settings.items.lightTheme') || 'Clair'}
-                </button>
-                <button
-                  onClick={() => handleThemeChange('dark')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                    preferences.theme === 'dark'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  <Moon className="h-4 w-4" />
-                  {t('settings.items.darkTheme') || 'Sombre'}
+                  English
                 </button>
               </div>
             </div>

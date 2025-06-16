@@ -26,9 +26,7 @@ export async function POST(request) {
         { message: 'Email ou mot de passe incorrect' },
         { status: 401 }
       )
-    }
-
-    // Check password
+    }    // Check password
     const isPasswordValid = await bcrypt.compare(password, user.password)
     if (!isPasswordValid) {
       return NextResponse.json(
@@ -36,6 +34,11 @@ export async function POST(request) {
         { status: 401 }
       )
     }
+
+    // Update last sign in date
+    await User.findByIdAndUpdate(user._id, { 
+      lastSignInAt: new Date() 
+    })
 
     // Generate JWT token
     const token = jwt.sign(
