@@ -196,7 +196,8 @@ export default function DashboardPage() {	const { t } = useTranslation()
 		<div className="min-h-screen bg-gray-50">
 			{/* Header avec timer et contrôles */}
 			<div className="bg-white shadow-sm border-b">
-				<div className="flex items-center justify-between p-6">					{/* Section gauche - Timer moderne */}
+				<div className="flex items-center justify-between p-6">					
+					{/* Section gauche - Timer moderne */}
 					<div className="flex items-center space-x-6">
 						<Timer 
 							onSaveTimer={(elapsedSeconds) => {
@@ -263,7 +264,8 @@ export default function DashboardPage() {	const { t } = useTranslation()
 						</button>
 					</div>
 				</div>
-			</div>			{/* Zone de contenu principal */}
+			</div>			
+			{/* Zone de contenu principal */}
 			<div className="flex-1 p-6">
 				{viewMode === 'calendar' ? (
 					<CalendarView

@@ -97,3 +97,50 @@ textarea:focus {
 	outline: 2px solid #3b82f6;
 	outline-offset: 2px;
 }
+
+/* Fix ULTRA SPÉCIFIQUE pour forcer gap-1 sur les liens de navigation de la sidebar */
+aside nav ul li a.group.flex.items-center {
+	gap: 0.25rem !important; 
+}
+
+aside nav a[class*="gap"] {
+	gap: 0.25rem !important;
+}
+aside nav a.group {
+	gap: 0 !important;
+}
+
+aside *[class*="gap-3"] {
+	gap: 0.25rem !important;
+}
+
+/* Force sur tous les liens de la sidebar */
+aside a {
+	gap: 0.25rem !important;
+}
+
+* {
+	--tw-space-x-reverse: 0 !important;
+	--tw-space-y-reverse: 0 !important;
+}
+
+aside nav a,
+aside nav Link,
+aside a[href*="/dashboard"] {
+	gap: 0.25rem !important;
+}
+
+.group.flex.items-center,
+a.group.flex.items-center,
+[class*="group"][class*="flex"][class*="items-center"] {
+	gap: 0.25rem !important;
+}
+
+.gap-3,
+[class*="gap-3"] {
+	gap: 0.25rem !important;
+}
+
+:root {
+	--tw-gap-3: 0.25rem !important;
+}

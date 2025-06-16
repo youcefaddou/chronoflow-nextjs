@@ -108,7 +108,7 @@ export default function OrganizationPage() {
 						<div className="space-y-4">
 							{teamMembers.map((member, index) => (
 								<div key={index} className="flex items-center justify-between p-4 border rounded-lg">
-									<div className="flex items-center gap-3">
+									<div className="flex items-center">
 										<div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-300 rounded-full flex items-center justify-center text-white font-bold">
 											{member.avatar}
 										</div>
