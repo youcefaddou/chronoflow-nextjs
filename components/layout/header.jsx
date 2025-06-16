@@ -10,19 +10,26 @@ import "./header.css"
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [isHydrated, setIsHydrated] = useState(false)
   const { t, i18n } = useTranslation()
   const pathname = usePathname()
   const navRef = useRef()
   const { user, loading } = useAuth()
 
+  // Attendre l'hydratation avant d'afficher le contenu dynamique
+  useEffect(() => {
+    setIsHydrated(true)
+  }, [])
+
   const currentLang = i18n.language || 'fr'
   const showFlag = currentLang === "fr" ? "/assets/eng.png" : "/assets/france.png"
   const nextLang = currentLang === "fr" ? "en" : "fr"
 
+  // Utiliser des labels par défaut jusqu'à l'hydratation
   const navLinks = [
-    { href: "/product", label: t("header.product") },
-    { href: "/pricing", label: t("header.pricing") },
-    { href: "/ressources", label: t("header.resources") },
+    { href: "/product", label: isHydrated ? t("header.product") : "Product" },
+    { href: "/pricing", label: isHydrated ? t("header.pricing") : "Pricing" },
+    { href: "/ressources", label: isHydrated ? t("header.resources") : "Resources" },
   ]
   const handleLangSwitch = () => {
     const newLang = nextLang;
@@ -105,36 +112,43 @@ export default function Header() {
                 >
                   {link.label}
                 </Link>
-              </li>            ))}            
-            {/* Boutons d'authentification conditionnels */}
+              </li>            ))}              {/* Boutons d'authentification conditionnels */}
             <li className="header-login-row">
-              {user ? (
-                // Utilisateur connecté - Afficher le bouton de déconnexion
+              {loading ? (
+                // Pendant le chargement, afficher un état neutre
                 <>
-                  <Link href="/dashboard" className="header-btn header-btn-secondary">
-                    {t("header.dashboard")}
+                  <div className="header-btn header-btn-secondary opacity-50">
+                    ...
+                  </div>
+                  <div className="header-btn header-btn-main opacity-50">
+                    ...
+                  </div>
+                </>
+              ) : user ? (
+                // Utilisateur connecté - Afficher le bouton de déconnexion
+                <>                  <Link href="/dashboard" className="header-btn header-btn-secondary">
+                    {isHydrated ? t("header.dashboard") : "Dashboard"}
                   </Link>
                   <button
                     onClick={handleLogout}
                     className="header-btn header-btn-main"
                   >
-                    {t("header.logout")}
+                    {isHydrated ? t("header.logout") : "Logout"}
                   </button>
                 </>
               ) : (
-                // Utilisateur non connecté - Afficher les boutons de connexion/inscription
-                <>
-                  <button
+                // Utilisateur non connecté - Afficher les boutons de connexion/inscription                // Utilisateur non connecté - Afficher les boutons de connexion/inscription
+                <>                  <button
                     onClick={handleSignup}
                     className="header-btn header-btn-secondary"
                   >
-                    {t("header.signup")}
+                    {isHydrated ? t("header.signup") : "Sign Up"}
                   </button>
                   <button
                     onClick={handleLogin}
                     className="header-btn header-btn-main"
                   >
-                    {t("header.login")}
+                    {isHydrated ? t("header.login") : "Login"}
                   </button>
                 </>
               )}

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { connectMongo } from '../../../../../../lib/mongoose.js'
-import GoogleEventTime from '../../../../../../models/google-event-time.js'
+import { connectMongo } from '../../../../../../lib/mongodb'
+import GoogleEventTime from '../../../../../../models/google-event-time'
 import jwt from 'jsonwebtoken'
 
 async function getUser(request) {
@@ -13,6 +13,7 @@ async function getUser(request) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret')
     return { id: decoded.userId }
   } catch (error) {
+    console.error('Token verification failed:', error.message)
     throw new Error('Invalid token')
   }
 }

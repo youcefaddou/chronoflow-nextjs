@@ -1,17 +1,18 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDashboardUser } from '../../contexts/dashboard-user-context'
 import { useTaskUpdate } from '../../contexts/task-update-context'
 import { useGlobalTimer } from '../../components/timer/global-timer-provider'
-import { Calendar, List, Focus, Download } from 'lucide-react'
+import { Calendar, List, Focus, Download, CloudDownload } from 'lucide-react'
 import Timer from '../../components/timer/timer'
 import SaveTimerModal from '../../components/timer/save-timer-modal'
 import FocusZoneModal from '../../components/dashboard/FocusZoneModal'
 import TaskListView from '../../components/tasks/task-list-view'
 import CalendarView from '../../components/calendar/calendar-view'
 import TaskExporterModal from '../../components/export/task-exporter'
+import { useMergedEvents } from '../../hooks/use-merged-events'
 
 // Pour l'instant, gardons les imports commentés pour éviter les erreurs
 // import CalendarSelectorModal from '../../components/dashboard/CalendarSelectorModal'
@@ -55,8 +56,7 @@ export default function DashboardPage() {	const { t } = useTranslation()
 		}
 		
 		console.log('handleSaveTimerTask: Saving task', taskData)
-		
-		try {
+				try {
 			const res = await fetch('/api/tasks', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
@@ -76,7 +76,7 @@ export default function DashboardPage() {	const { t } = useTranslation()
 			const data = await res.json()
 			if (!res.ok) {
 				console.error('handleSaveTimerTask: Error response', data)
-				alert('Erreur lors de l\'enregistrement: ' + (data.message || data.error))
+				// On pourrait ajouter un état d'erreur ici si nécessaire
 				return
 			}
 			
@@ -89,27 +89,63 @@ export default function DashboardPage() {	const { t } = useTranslation()
 			setElapsedSecondsToSave(0)
 			triggerTaskUpdate()		} catch (err) {
 			console.error('handleSaveTimerTask: Exception', err)
-
 		}
 	}
 	
-	// Fonction pour importer Google Calendar
+	// Fonction pour importer Google Calendar avec feedback amélioré
+	const [importLoading, setImportLoading] = useState(false)
+	const [importStats, setImportStats] = useState(null)
+	const [importMessage, setImportMessage] = useState('')
+	const [importError, setImportError] = useState('')
+	const [timerMessage, setTimerMessage] = useState('')
+	const [isHydrated, setIsHydrated] = useState(false)
+	
+	// Gérer l'hydratation pour éviter les erreurs de mismatch
+	useEffect(() => {
+		setIsHydrated(true)
+	}, [])
+	
 	const handleImportGoogleCalendar = async () => {
+		setImportLoading(true)
+		setImportStats(null)
+		setImportMessage('')
+		setImportError('')
+		
 		try {
 			const res = await fetch('/api/integrations/google-calendar/import', {
 				method: 'POST',
 			})
+			
 			if (!res.ok) {
 				const data = await res.json()
-				alert(data.error || 'Erreur lors de l\'import Google Calendar')
-				return
+				throw new Error(data.error || 'Erreur lors de l\'import Google Calendar')
 			}
-			// Rafraîchir les données
+			
+			const data = await res.json()
+			setImportStats(data)			// Rafraîchir les données
 			triggerTaskUpdate()
-			alert('Import Google Calendar réussi !')
+			loadGoogleTasksCount()
+			refetchMergedEvents() // Rafraîchir les événements fusionnés
+			
+			// Rafraîchir les événements dans le calendrier sans refresh de page
+			if (eventsRefetchFn) {
+				eventsRefetchFn()
+			}
+			
+			// Message de succès avec statistiques
+			setImportMessage(`✅ Import réussi ! ${data.imported} nouvelles tâches importées (${data.total} événements scannés)`)
+			
+			// Effacer le message après 5 secondes
+			setTimeout(() => setImportMessage(''), 5000)
+			
 		} catch (err) {
 			console.error('Error importing Google Calendar:', err)
-			alert('Erreur lors de l\'import Google Calendar')
+			setImportError('❌ ' + err.message)
+			
+			// Effacer l'erreur après 5 secondes
+			setTimeout(() => setImportError(''), 5000)
+		} finally {
+			setImportLoading(false)
 		}
 	}
 		const [activeFilter, setActiveFilter] = useState('all')
@@ -121,7 +157,31 @@ export default function DashboardPage() {	const { t } = useTranslation()
 	const [showExportModal, setShowExportModal] = useState(false)
 	const [tasks, setTasks] = useState([])
 	const [lastSavedTaskId, setLastSavedTaskId] = useState(null)
-	const [lastSavedDuration, setLastSavedDuration] = useState(0)
+	const [lastSavedDuration, setLastSavedDuration] = useState(0)	// État pour les statistiques des tâches Google
+	const [googleTasksCount, setGoogleTasksCount] = useState(0)
+	const [eventsRefetchFn, setEventsRefetchFn] = useState(null)
+	
+	// Hook pour fusionner les tâches normales et Google dans la vue liste
+	const { events: mergedEvents, loading: mergedEventsLoading, refetch: refetchMergedEvents } = useMergedEvents()
+	
+	// Fonction callback pour recevoir la fonction refetch depuis FullCalendarGrid
+	const handleEventsRefetch = useCallback((refetchFn) => {
+		setEventsRefetchFn(() => refetchFn)
+	}, [])
+	
+	// Charger le nombre de tâches Google importées
+	const loadGoogleTasksCount = async () => {
+		try {
+			const res = await fetch('/api/integrations/google-calendar/imported-events')
+			if (res.ok) {
+				const data = await res.json()
+				setGoogleTasksCount(data.length)
+			}
+		} catch (err) {
+			console.error('Error loading Google tasks count:', err)
+		}
+	}
+
 	// Charger les tâches
 	const loadTasks = async () => {
 		if (!user?.id) {
@@ -148,7 +208,13 @@ export default function DashboardPage() {	const { t } = useTranslation()
 			console.error('loadTasks: Exception', err)
 			setTasks([])
 		}
-	}	// Charger les tâches au chargement et lors du refresh
+	}	// Charger le count au chargement et lors du refresh des tâches
+	useEffect(() => {
+		if (user?.id) {
+			loadGoogleTasksCount()
+		}
+	}, [user?.id, taskRefreshKey])
+	// Charger les tâches au chargement et lors du refresh
 	useEffect(() => {
 		loadTasks()
 	}, [user?.id, taskRefreshKey])
@@ -161,10 +227,10 @@ export default function DashboardPage() {	const { t } = useTranslation()
 		window.addEventListener('taskUpdated', handleTaskUpdateEvent)
 		return () => window.removeEventListener('taskUpdated', handleTaskUpdateEvent)
 	}, [triggerTaskUpdate])
-
 	// Fonction de callback pour rafraîchir les tâches
 	const handleTaskUpdate = () => {
 		triggerTaskUpdate()
+		refetchMergedEvents() // Rafraîchir aussi les événements fusionnés
 	}
 	// Raccourcis clavier - simplifiés car Timer gère ses propres contrôles
 	useEffect(() => {
@@ -176,8 +242,7 @@ export default function DashboardPage() {	const { t } = useTranslation()
 		window.addEventListener('keydown', handleKeyPress)
 		return () => window.removeEventListener('keydown', handleKeyPress)
 	}, [])
-
-	if (userLoading) {
+	if (userLoading || !isHydrated) {
 		return (
 			<div className="flex items-center justify-center min-h-screen">
 				<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -193,10 +258,25 @@ export default function DashboardPage() {	const { t } = useTranslation()
 		)
 	}
 	return (
-		<div className="min-h-screen bg-gray-50">
-			{/* Header avec timer et contrôles */}
+		<div className="min-h-screen bg-gray-50">			{/* Header avec timer et contrôles */}
 			<div className="bg-white shadow-sm border-b">
-				<div className="flex items-center justify-between p-6">					
+				{/* Messages d'import */}				{timerMessage && (
+					<div className="bg-blue-50 border-l-4 border-blue-400 p-4">
+						<p className="text-blue-700 font-medium">{timerMessage}</p>
+					</div>
+				)}
+				{importMessage && (
+					<div className="bg-green-50 border-l-4 border-green-400 p-4">
+						<p className="text-green-700 font-medium">{importMessage}</p>
+					</div>
+				)}
+				{importError && (
+					<div className="bg-red-50 border-l-4 border-red-400 p-4">
+						<p className="text-red-700 font-medium">{importError}</p>
+					</div>
+				)}
+				
+				<div className="flex items-center justify-between p-6">
 					{/* Section gauche - Timer moderne */}
 					<div className="flex items-center space-x-6">
 						<Timer 
@@ -235,9 +315,16 @@ export default function DashboardPage() {	const { t } = useTranslation()
 								<List className="w-4 h-4" />
 								<span className="text-sm font-medium">{t('dashboard.tasks', 'Tâches')}</span>
 							</button>
-						</div>
-
-						{/* Actions rapides */}
+						</div>						{/* Actions rapides */}
+						{googleTasksCount > 0 && (
+							<div className="flex items-center space-x-2 px-3 py-2 bg-green-50 border border-green-200 rounded-lg">
+								<div className="w-2 h-2 bg-green-500 rounded-full"></div>
+								<span className="text-sm text-green-700 font-medium">
+									{googleTasksCount} tâches Google Calendar
+								</span>
+							</div>
+						)}
+						
 						<button
 							onClick={() => setShowFocusZone(true)}
 							className="flex items-center space-x-2 px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors"
@@ -245,39 +332,54 @@ export default function DashboardPage() {	const { t } = useTranslation()
 						>
 							<Focus className="w-4 h-4" />
 							<span className="text-sm font-medium">{t('dashboard.focusZone', 'Focus')}</span>
-						</button>						<button
+						</button><button
 							onClick={handleImportGoogleCalendar}
-							className="flex items-center space-x-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
-							title={t('dashboard.importCalendar', 'Importer calendrier')}
+							disabled={importLoading}
+							className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all font-medium ${
+								importLoading 
+									? 'bg-gray-400 text-white cursor-not-allowed' 
+									: 'bg-blue-500 hover:bg-blue-600 text-white hover:scale-105 shadow-lg'
+							}`}
+							title={t('dashboard.importCalendar', 'Importer Google Calendar')}
 						>
-							<Calendar className="w-4 h-4" />
-							<span className="text-sm font-medium">{t('dashboard.import', 'Importer')}</span>
+							{importLoading ? (
+								<div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+							) : (
+								<CloudDownload className="w-4 h-4" />
+							)}
+							<span className="text-sm">
+								{importLoading ? 'Import...' : t('dashboard.import', 'Importer')}
+							</span>
+							{importStats && (
+								<span className="bg-white text-blue-600 px-2 py-0.5 rounded-full text-xs font-semibold">
+									+{importStats.imported}
+								</span>
+							)}
 						</button>
 
 						<button
 							onClick={() => setShowExportModal(true)}
 							className="flex items-center space-x-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
-							title={t('dashboard.exportTasks', 'Exporter les tâches')}
-						>
+							title={t('dashboard.exportTasks', 'Exporter les tâches')}						>
 							<Download className="w-4 h-4" />
 							<span className="text-sm font-medium">{t('dashboard.export', 'Exporter')}</span>
 						</button>
 					</div>
 				</div>
-			</div>			
+			</div>
+			
 			{/* Zone de contenu principal */}
-			<div className="flex-1 p-6">
-				{viewMode === 'calendar' ? (
+			<div className="flex-1 p-6">				{viewMode === 'calendar' ? (
 					<CalendarView
 						user={user}
 						refreshKey={taskRefreshKey}
 						lastSavedTaskId={lastSavedTaskId}
 						lastSavedDuration={lastSavedDuration}
 						onRefresh={handleTaskUpdate}
-					/>
-				) : (
+						onEventsRefetch={handleEventsRefetch}
+					/>				) : (
 					<TaskListView
-						tasks={tasks}
+						tasks={mergedEvents} // Utiliser les événements fusionnés au lieu des tâches simples
 						onTaskUpdate={handleTaskUpdate}
 						user={user}
 						lastSavedTaskId={lastSavedTaskId}
@@ -310,13 +412,11 @@ export default function DashboardPage() {	const { t } = useTranslation()
 					onSave={handleSaveTimerTask}
 					elapsedSeconds={elapsedSecondsToSave}
 				/>
-			)}
-
-			{showExportModal && (
+			)}			{showExportModal && (
 				<TaskExporterModal
 					isOpen={showExportModal}
 					onClose={() => setShowExportModal(false)}
-					tasks={tasks}
+					tasks={mergedEvents} // Utiliser les événements fusionnés au lieu des tâches simples
 					user={user}
 					lang={t('lang', 'fr')}
 				/>

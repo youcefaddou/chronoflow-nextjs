@@ -11,29 +11,32 @@ export async function GET(request) {
 
     if (!token) {
       return NextResponse.json({ error: 'Token d\'authentification requis' }, { status: 401 })
-    }
-
-    // Vérifier le JWT
+    }    // Vérifier le JWT
     let decoded
     try {
-      decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET)
+      decoded = jwt.verify(token, process.env.JWT_SECRET)
     } catch {
       return NextResponse.json({ error: 'Token invalide' }, { status: 401 })
     }    // Connecter à la base de données
     await connectMongo()
 
     // Récupérer l'utilisateur
-    const user = await User.findById(decoded.userId).select('googleCalendar')
+    const user = await User.findById(decoded.userId).select('googleCalendarTokens')
 
     if (!user) {
       return NextResponse.json({ error: 'Utilisateur non trouvé' }, { status: 404 })
     }
 
+    // Vérifier si l'utilisateur a des tokens Google Calendar
+    const hasTokens = user.googleCalendarTokens && 
+                     user.googleCalendarTokens.access_token && 
+                     user.googleCalendarTokens.refresh_token
+
     // Retourner le statut de connexion
     const status = {
-      connected: user.googleCalendar?.connected || false,
-      email: user.googleCalendar?.email || null,
-      connectedAt: user.googleCalendar?.connectedAt || null
+      connected: !!hasTokens,
+      email: null, // On peut récupérer l'email plus tard si nécessaire
+      connectedAt: null // Optionnel pour l'instant
     }
 
     return NextResponse.json(status)

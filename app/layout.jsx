@@ -3,6 +3,7 @@ import Header from '../components/layout/header'
 import Footer from '../components/layout/footer'
 import I18nProvider from '../components/i18n-provider'
 import { AuthProvider } from '../contexts/auth-context'
+import { Toaster } from 'react-hot-toast'
 
 export const metadata = {
 	title: 'ChronoFlow - Gestion du Temps et Productivité',
@@ -12,7 +13,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
 	return (
 		<html lang="fr">
-			<body className="antialiased" suppressHydrationWarnings={true}>
+			<body className="antialiased">
 				<I18nProvider>
 					<AuthProvider>
 						<div className="min-h-screen flex flex-col">
@@ -22,6 +23,7 @@ export default function RootLayout({ children }) {
 							</main>
 							<Footer />
 						</div>
+						<Toaster />
 					</AuthProvider>
 				</I18nProvider>
 			</body>

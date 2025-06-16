@@ -41,6 +41,8 @@ function TaskListView({ tasks = [], onTaskUpdate, user, lastSavedTaskId, lastSav
 	const [localTaskDurations, setLocalTaskDurations] = useState({})
 	const [showAddTaskModal, setShowAddTaskModal] = useState(false)
 	const [taskList, setTaskList] = useState(tasks.map(mapTaskFromApi))
+	const [statusMessage, setStatusMessage] = useState('')
+	const [errorMessage, setErrorMessage] = useState('')
 
 	// Keep local taskList in sync with tasks prop
 	useEffect(() => {
@@ -74,18 +76,21 @@ function TaskListView({ tasks = [], onTaskUpdate, user, lastSavedTaskId, lastSav
 						isFinished: true,
 					}),
 				})
-				
-				if (!res.ok) {
+						if (!res.ok) {
 					const text = await res.text()
 					console.error('Erreur lors de la complétion Google:', text)
-					alert(lang === 'fr' ? 'Erreur lors de la complétion Google' : 'Error finishing Google event')
+					setErrorMessage(lang === 'fr' ? '❌ Erreur lors de la complétion Google' : '❌ Error finishing Google event')
+					setTimeout(() => setErrorMessage(''), 3000)
 					return
 				}
+				setStatusMessage(lang === 'fr' ? '✅ Tâche Google terminée' : '✅ Google task completed')
+				setTimeout(() => setStatusMessage(''), 3000)
 				onTaskUpdate && onTaskUpdate()
 				return
 			} catch (err) {
 				console.error('Erreur lors de la complétion Google:', err)
-				alert(lang === 'fr' ? 'Erreur lors de la complétion Google' : 'Error finishing Google event')
+				setErrorMessage(lang === 'fr' ? '❌ Erreur lors de la complétion Google' : '❌ Error finishing Google event')
+				setTimeout(() => setErrorMessage(''), 3000)
 				return
 			}
 		}
@@ -251,9 +256,20 @@ function TaskListView({ tasks = [], onTaskUpdate, user, lastSavedTaskId, lastSav
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [lastSavedTaskId, lastSavedDuration, taskList])
-
 	return (
 		<div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+			{/* Messages de statut et d'erreur */}
+			{statusMessage && (
+				<div className="mb-4 p-3 rounded-md bg-green-50 border border-green-200">
+					<p className="text-green-700 text-sm">{statusMessage}</p>
+				</div>
+			)}
+			{errorMessage && (
+				<div className="mb-4 p-3 rounded-md bg-red-50 border border-red-200">
+					<p className="text-red-700 text-sm">{errorMessage}</p>
+				</div>
+			)}
+			
 			{/* En-tête avec bouton d'ajout */}
 			<div className="flex justify-between items-center mb-6">
 				<h2 className="text-xl font-semibold text-blue-700">

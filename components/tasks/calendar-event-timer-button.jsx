@@ -63,11 +63,9 @@ function CalendarEventTimerButton({ event, timer, lang, disabled, onTaskUpdate }
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ eventId, durationSeconds: newDuration }),
 				})
-				
-				if (!res.ok) {
+						if (!res.ok) {
 					const text = await res.text()
 					console.error('Erreur lors de la mise à jour du timer Google:', text)
-					alert('Erreur lors de la mise à jour du timer: ' + text.slice(0, 200))
 					setSaving(false)
 					if (onTaskUpdate) onTaskUpdate(event.id, newDuration)
 					return
@@ -86,11 +84,10 @@ function CalendarEventTimerButton({ event, timer, lang, disabled, onTaskUpdate }
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ durationSeconds: newDuration }),
 				})
-				
-				if (!res.ok) {
+						if (!res.ok) {
 					const text = await res.text()
 					console.error('Erreur lors de la mise à jour du timer:', text)
-					alert('Erreur lors de la mise à jour du timer: ' + text.slice(0, 200))
+					// Pas d'alert(), juste log l'erreur
 					setSaving(false)
 					if (onTaskUpdate) onTaskUpdate(event.id, newDuration)
 					return

@@ -11,10 +11,10 @@ async function getUser(request) {
     if (!token) {
       throw new Error('No token found')
     }
-    
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret')
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret')
     return { id: decoded.userId }
   } catch (error) {
+    console.error('Token verification failed:', error.message)
     throw new Error('Invalid token')
   }
 }

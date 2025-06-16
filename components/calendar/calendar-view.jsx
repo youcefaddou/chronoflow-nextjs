@@ -4,7 +4,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import FullCalendarGrid from './full-calendar-grid'
 
-function CalendarView({ user, refreshKey, lastSavedTaskId, lastSavedDuration, onRefresh }) {
+function CalendarView({ user, refreshKey, lastSavedTaskId, lastSavedDuration, onRefresh, onEventsRefetch }) {
 	const { t } = useTranslation()
 
 	return (
@@ -21,6 +21,7 @@ function CalendarView({ user, refreshKey, lastSavedTaskId, lastSavedDuration, on
 				lastSavedTaskId={lastSavedTaskId}
 				lastSavedDuration={lastSavedDuration}
 				onRefresh={onRefresh}
+				onEventsRefetch={onEventsRefetch}
 			/>
 		</div>
 	)

@@ -16,8 +16,12 @@ export function useAuth() {
 export function AuthProvider({ children }) {
 	const [user, setUser] = useState(null)
 	const [loading, setLoading] = useState(true)
+	const [isHydrated, setIsHydrated] = useState(false)
 	
 	useEffect(() => {
+		// Marquer que l'hydratation est terminée
+		setIsHydrated(true)
+		
 		const getUser = async () => {
 			try {
 				const res = await fetch('/api/auth/session', { 
@@ -42,7 +46,7 @@ export function AuthProvider({ children }) {
 	const value = {
 		user,
 		setUser,
-		loading
+		loading: loading || !isHydrated // Garder loading=true jusqu'à hydratation
 	}
 
 	return (

@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
-import { Button } from '../../../components/ui/button'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-hot-toast'
 
@@ -158,110 +156,121 @@ export default function IntegrationsPage() {
       setLoading(false)
     }
   }
-
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">
-            {t('integrations.title')}
+            Intégrations
           </h1>
           <p className="text-gray-600 mt-1">
-            {t('integrations.subtitle')}
+            Connectez vos services préférés à ChronoFlow
           </p>
         </div>
 
-        <div className="space-y-6">
-          {/* Google Calendar Integration */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+        <div className="space-y-6">          {/* Google Calendar Integration */}
+          <div className={`bg-white rounded-lg shadow p-6 transition-all ${
+            googleConnected ? 'border-l-4 border-green-500' : 'border-l-4 border-gray-300'
+          }`}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all ${
+                  googleConnected ? 'bg-green-600' : 'bg-blue-600'
+                }`}>
+                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
                   </svg>
                 </div>
-                Google Calendar
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-gray-600">
-                Synchronisez vos événements Google Calendar avec ChronoFlow pour un suivi de temps unifié.
-              </p>
-                <div className="flex gap-4">
-                <Button 
-                  onClick={connectGoogleCalendar}
-                  disabled={loading}
-                  variant={googleConnected ? "outline" : "default"}
-                >
-                  {loading ? 'Connexion...' : googleConnected ? 'Reconnecter' : 'Connecter Google Calendar'}
-                </Button>
-                
-                {googleConnected && (
-                  <>
-                    <Button 
-                      onClick={syncGoogleCalendar}
-                      disabled={loading}
-                      variant="outline"
-                    >
-                      {loading ? 'Synchronisation...' : 'Synchroniser les événements'}
-                    </Button>
-                    
-                    <Button 
-                      onClick={disconnectGoogleCalendar}
-                      disabled={loading}
-                      variant="destructive"
-                    >
-                      {loading ? 'Déconnexion...' : 'Déconnecter'}
-                    </Button>
-                  </>
-                )}
-              </div>
-
-              {googleConnected && (
-                <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-                    <span className="text-green-700 font-medium">
-                      Google Calendar connecté
+                <div>
+                  <h2 className="text-xl font-semibold">Google Calendar</h2>
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className={`w-3 h-3 rounded-full ${
+                      googleConnected ? 'bg-green-500' : 'bg-gray-400'
+                    }`}></div>
+                    <span className={`text-sm font-medium ${
+                      googleConnected ? 'text-green-700' : 'text-gray-500'
+                    }`}>
+                      {googleConnected ? 'Connecté' : 'Non connecté'}
                     </span>
                   </div>
-                  <p className="text-green-600 text-sm mt-1">
-                    {googleEmail && `Connecté avec : ${googleEmail}`}
-                  </p>
-                  <p className="text-green-600 text-sm">
-                    Vos événements Google Calendar apparaîtront dans votre calendrier ChronoFlow.
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Autres intégrations futures */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Intégrations à venir</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 border border-gray-200 rounded-lg opacity-50">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-6 h-6 bg-gray-400 rounded"></div>
-                    <span className="font-medium text-gray-500">Slack</span>
-                  </div>
-                  <p className="text-sm text-gray-400">Prochainement disponible</p>
-                </div>
-                
-                <div className="p-4 border border-gray-200 rounded-lg opacity-50">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-6 h-6 bg-gray-400 rounded"></div>
-                    <span className="font-medium text-gray-500">Trello</span>
-                  </div>
-                  <p className="text-sm text-gray-400">Prochainement disponible</p>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+              
+              {googleConnected && (
+                <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                  ✅ Actif
+                </div>
+              )}
+            </div>
+            
+            <p className="text-gray-600 mb-4">
+              Synchronisez vos événements Google Calendar avec ChronoFlow pour un suivi de temps unifié.
+            </p>
+              <div className="flex gap-4">
+              {!googleConnected ? (
+                <button 
+                  onClick={connectGoogleCalendar}
+                  disabled={loading}
+                  className={`px-6 py-3 rounded-lg font-medium transition-all ${
+                    loading 
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                      : 'bg-blue-600 text-white hover:bg-blue-700 hover:scale-105 shadow-lg'
+                  }`}
+                >
+                  {loading ? 'Connexion...' : 'Connecter Google Calendar'}
+                </button>
+              ) : (
+                <div className="flex gap-4">
+                  <button 
+                    onClick={syncGoogleCalendar}
+                    disabled={loading}
+                    className={`px-4 py-2 rounded-lg font-medium border transition-all ${
+                      loading 
+                        ? 'border-gray-300 text-gray-500 cursor-not-allowed' 
+                        : 'border-green-300 text-green-700 hover:bg-green-50 hover:border-green-400'
+                    }`}
+                  >
+                    {loading ? 'Synchronisation...' : 'Synchroniser les événements'}
+                  </button>
+                  
+                  <button 
+                    onClick={disconnectGoogleCalendar}
+                    disabled={loading}
+                    className={`px-6 py-3 rounded-lg font-medium transition-all ${
+                      loading 
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                        : 'bg-red-600 text-white hover:bg-red-700 hover:scale-105 shadow-lg'
+                    }`}
+                  >
+                    {loading ? 'Déconnexion...' : 'Déconnecter Google Calendar'}
+                  </button>
+                </div>
+              )}
+            </div>            {googleConnected && (
+              <div className="mt-4 p-4 bg-gradient-to-r from-green-50 to-green-100 border border-green-200 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-green-800 font-semibold text-lg">
+                      🎉 Google Calendar connecté avec succès !
+                    </h3>
+                    {googleEmail && (
+                      <p className="text-green-700 text-sm mt-1">
+                        <strong>Compte connecté :</strong> {googleEmail}
+                      </p>
+                    )}
+                    <p className="text-green-700 text-sm mt-1">
+                      Vos événements Google Calendar sont maintenant synchronisés avec ChronoFlow.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

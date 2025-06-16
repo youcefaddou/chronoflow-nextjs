@@ -25,7 +25,7 @@ async function getUser(request) {
       throw new Error('No token found')
     }
     
-    const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET)
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
     return { id: decoded.userId }
   } catch {
     throw new Error('Invalid token')

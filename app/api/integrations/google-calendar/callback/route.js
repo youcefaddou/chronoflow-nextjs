@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import { google } from 'googleapis'
 import { connectMongo } from '../../../../../lib/mongodb'
 import User from '../../../../../models/user'
 
@@ -18,42 +17,68 @@ export async function GET(request) {
 
     // Vérifier les paramètres requis
     if (!code || !state) {
+      console.error('[Google Calendar Callback] Code ou state manquant')
+      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/dashboard/integrations?google=error`)
+    }    console.log('[Google Calendar Callback] Code reçu:', code.substring(0, 20) + '...')
+    console.log('[Google Calendar Callback] State (userId):', state)
+
+    // Diagnostic des paramètres
+    console.log('[Google Calendar Callback] DIAGNOSTIC:')
+    console.log('  - Client ID:', process.env.GOOGLE_CLIENT_ID?.substring(0, 20) + '...')
+    console.log('  - Client Secret présent:', !!process.env.GOOGLE_CLIENT_SECRET)
+    console.log('  - Redirect URI:', process.env.GOOGLE_CALENDAR_REDIRECT_URI)
+    console.log('  - Code length:', code.length)
+
+    try {
+      // Échanger le code contre les tokens (approche HTTP directe comme le login principal)
+      console.log('[Google Calendar Callback] Début échange token avec approche HTTP directe...')
+      
+      const tokenParams = new URLSearchParams({
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+        code: code,
+        grant_type: 'authorization_code',
+        redirect_uri: process.env.GOOGLE_CALENDAR_REDIRECT_URI
+      })
+
+      const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: tokenParams.toString()
+      })
+
+      const tokenData = await tokenResponse.json()
+      
+      if (!tokenResponse.ok) {
+        console.error('[Google Calendar Callback] Erreur échange token:', tokenData)
+        throw new Error(`Token exchange failed: ${tokenData.error_description || tokenData.error}`)
+      }
+
+      const tokens = tokenData
+      console.log('[Google Calendar Callback] Tokens reçus avec succès via HTTP direct')
+
+      // Connecter à la base de données
+      await connectMongo()
+
+      // Stocker les tokens dans le profil utilisateur
+      await User.findByIdAndUpdate(state, {
+        googleCalendarTokens: tokens
+      })
+
+      console.log(`[Google Calendar] Connexion réussie pour l'utilisateur ${state}`)
+
+      // Rediriger vers la page d'intégrations avec succès
+      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/dashboard/integrations?google=success`)
+
+    } catch (tokenError) {
+      console.error('[Google Calendar Callback] Erreur échange token:', tokenError)
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/dashboard/integrations?google=error`)
     }
 
-    // Configuration OAuth2 Google
-    const oauth2Client = new google.auth.OAuth2(
-      process.env.GOOGLE_CALENDAR_CLIENT_ID,
-      process.env.GOOGLE_CALENDAR_CLIENT_SECRET,
-      `${process.env.NEXTAUTH_URL}/api/integrations/google-calendar/callback`
-    )
-
-    // Échanger le code contre les tokens
-    const { tokens } = await oauth2Client.getToken(code)
-    oauth2Client.setCredentials(tokens)
-
-    // Récupérer les informations de l'utilisateur Google
-    const oauth2 = google.oauth2({ version: 'v2', auth: oauth2Client })
-    const { data: userInfo } = await oauth2.userinfo.get()    // Connecter à la base de données
-    await connectMongo()    // Mettre à jour l'utilisateur avec les tokens Google Calendar (comme dans /chrono)
-    await User.findByIdAndUpdate(state, {
-      googleCalendarTokens: tokens,
-      googleCalendar: {
-        connected: true,
-        accessToken: tokens.access_token,
-        refreshToken: tokens.refresh_token,
-        email: userInfo.email,
-        connectedAt: new Date()
-      }
-    })
-
-    console.log(`[Google Calendar] Connexion réussie pour l'utilisateur ${state}`)
-
-    // Rediriger vers la page d'intégrations avec succès
-    return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/dashboard/integrations?google=success`)
-
   } catch (error) {
-    console.error('[Google Calendar Callback] Erreur:', error)
+    console.error('[Google Calendar Callback] Erreur générale:', error)
     return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/dashboard/integrations?google=error`)
   }
 }

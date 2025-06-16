@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -12,7 +12,7 @@ import CalendarEventTimerButton from '../tasks/calendar-event-timer-button'
 import AddTaskModal from '../modals/add-task-modal'
 import { useMergedEvents } from '../../hooks/use-merged-events'
 
-function FullCalendarGrid({ user, refreshKey, lastSavedTaskId, lastSavedDuration, onRefresh }) {
+function FullCalendarGrid({ user, refreshKey, lastSavedTaskId, lastSavedDuration, onRefresh, onEventsRefetch }) {
 	const { t, i18n } = useTranslation()
 	const lang = i18n.language.startsWith('en') ? 'en' : 'fr'
 	const [selectedEvent, setSelectedEvent] = useState(null)
@@ -23,6 +23,13 @@ function FullCalendarGrid({ user, refreshKey, lastSavedTaskId, lastSavedDuration
 	const timer = useGlobalTimer()
 
 	const { events: mergedEvents, loading: eventsLoading, error: eventsError, refetch: refetchEvents } = useMergedEvents()
+
+	// Exposer la fonction refetch au parent
+	useEffect(() => {
+		if (onEventsRefetch) {
+			onEventsRefetch(refetchEvents)
+		}
+	}, [onEventsRefetch, refetchEvents])
 
 	// Error messages with i18n
 	const getErrorMessage = useCallback((key) => {

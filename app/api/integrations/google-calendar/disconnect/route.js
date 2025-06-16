@@ -11,15 +11,13 @@ export async function POST(request) {
 
     if (!token) {
       return NextResponse.json({ error: 'Token d\'authentification requis' }, { status: 401 })
-    }
-
-    // Vérifier le JWT
+    }    // Vérifier le JWT
     let decoded
     try {
-      decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET)
+      decoded = jwt.verify(token, process.env.JWT_SECRET)
     } catch {
       return NextResponse.json({ error: 'Token invalide' }, { status: 401 })
-    }    // Connecter à la base de données
+    }// Connecter à la base de données
     await connectMongo()    // Déconnecter Google Calendar pour l'utilisateur (comme dans /chrono)
     await User.findByIdAndUpdate(decoded.userId, {
       $unset: {
