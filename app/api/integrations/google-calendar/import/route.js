@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
-import { connectMongo } from '../../../../../lib/mongoose.js'
-import User from '../../../../../models/user.js'
-import GoogleEventTime from '../../../../../models/google-event-time.js'
+import { connectMongo } from '../../../../../lib/mongodb'
+import User from '../../../../../models/user'
+import GoogleEventTime from '../../../../../models/google-event-time'
 import { google } from 'googleapis'
 import jwt from 'jsonwebtoken'
 

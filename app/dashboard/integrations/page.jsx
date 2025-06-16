@@ -12,22 +12,78 @@ export default function IntegrationsPage() {
   const searchParams = useSearchParams()
   const [loading, setLoading] = useState(false)
   const [googleConnected, setGoogleConnected] = useState(false)
+  const [googleEmail, setGoogleEmail] = useState(null)
+
+  useEffect(() => {
+    // Vérifier le statut de connexion Google Calendar
+    checkGoogleStatus()
+  }, [])
 
   useEffect(() => {
     // Vérifier les paramètres d'URL pour les retours d'OAuth
     const googleStatus = searchParams.get('google')
     if (googleStatus === 'success') {
       toast.success('Google Calendar connecté avec succès!')
-      setGoogleConnected(true)
+      checkGoogleStatus() // Rafraîchir le statut
     } else if (googleStatus === 'error') {
       toast.error('Erreur lors de la connexion à Google Calendar')
     }
   }, [searchParams])
+  const getAuthToken = () => {
+    if (typeof document !== 'undefined') {
+      return document.cookie
+        .split('; ')
+        .find(row => row.startsWith('token='))
+        ?.split('=')[1]
+    }
+    return null
+  }
+
+  const checkGoogleStatus = async () => {
+    try {
+      const token = getAuthToken()
+      if (!token) {
+        console.warn('Token non trouvé')
+        return
+      }
+
+      const response = await fetch('/api/integrations/google-calendar/status', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        setGoogleConnected(data.connected)
+        setGoogleEmail(data.email)
+      } else {
+        console.warn('Erreur statut:', response.status)
+      }
+    } catch (error) {
+      console.error('Erreur lors de la vérification du statut:', error)
+    }
+  }
 
   const connectGoogleCalendar = async () => {
     setLoading(true)
     try {
-      const response = await fetch('/api/integrations/google-calendar/auth')
+      const token = getAuthToken()
+      if (!token) {
+        toast.error('Erreur d\'authentification - veuillez vous reconnecter')
+        return
+      }
+
+      const response = await fetch('/api/integrations/google-calendar/auth', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      
+      if (!response.ok) {
+        throw new Error(`Erreur ${response.status}: ${response.statusText}`)
+      }
+
       const data = await response.json()
       
       if (data.authUrl) {
@@ -37,7 +93,37 @@ export default function IntegrationsPage() {
       }
     } catch (error) {
       console.error('Erreur connexion Google Calendar:', error)
-      toast.error('Erreur lors de la connexion à Google Calendar')
+      toast.error(`Erreur lors de la connexion à Google Calendar: ${error.message}`)
+    } finally {
+      setLoading(false)
+    }
+  }
+  const disconnectGoogleCalendar = async () => {
+    setLoading(true)
+    try {
+      const token = getAuthToken()
+      if (!token) {
+        toast.error('Erreur d\'authentification - veuillez vous reconnecter')
+        return
+      }
+
+      const response = await fetch('/api/integrations/google-calendar/disconnect', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      
+      if (response.ok) {
+        toast.success('Google Calendar déconnecté avec succès!')
+        setGoogleConnected(false)
+        setGoogleEmail(null)
+      } else {
+        throw new Error(`Erreur ${response.status}: ${response.statusText}`)
+      }
+    } catch (error) {
+      console.error('Erreur déconnexion Google Calendar:', error)
+      toast.error(`Erreur lors de la déconnexion: ${error.message}`)
     } finally {
       setLoading(false)
     }
@@ -46,19 +132,28 @@ export default function IntegrationsPage() {
   const syncGoogleCalendar = async () => {
     setLoading(true)
     try {
+      const token = getAuthToken()
+      if (!token) {
+        toast.error('Erreur d\'authentification - veuillez vous reconnecter')
+        return
+      }
+
       const response = await fetch('/api/integrations/google-calendar/import', {
-        method: 'POST'
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       })
       
       if (response.ok) {
         const data = await response.json()
         toast.success(`${data.imported} événements importés avec succès!`)
       } else {
-        throw new Error('Erreur lors de la synchronisation')
+        throw new Error(`Erreur ${response.status}: ${response.statusText}`)
       }
     } catch (error) {
       console.error('Erreur sync Google Calendar:', error)
-      toast.error('Erreur lors de la synchronisation')
+      toast.error(`Erreur lors de la synchronisation: ${error.message}`)
     } finally {
       setLoading(false)
     }
@@ -93,8 +188,7 @@ export default function IntegrationsPage() {
               <p className="text-gray-600">
                 Synchronisez vos événements Google Calendar avec ChronoFlow pour un suivi de temps unifié.
               </p>
-              
-              <div className="flex gap-4">
+                <div className="flex gap-4">
                 <Button 
                   onClick={connectGoogleCalendar}
                   disabled={loading}
@@ -104,13 +198,23 @@ export default function IntegrationsPage() {
                 </Button>
                 
                 {googleConnected && (
-                  <Button 
-                    onClick={syncGoogleCalendar}
-                    disabled={loading}
-                    variant="outline"
-                  >
-                    {loading ? 'Synchronisation...' : 'Synchroniser les événements'}
-                  </Button>
+                  <>
+                    <Button 
+                      onClick={syncGoogleCalendar}
+                      disabled={loading}
+                      variant="outline"
+                    >
+                      {loading ? 'Synchronisation...' : 'Synchroniser les événements'}
+                    </Button>
+                    
+                    <Button 
+                      onClick={disconnectGoogleCalendar}
+                      disabled={loading}
+                      variant="destructive"
+                    >
+                      {loading ? 'Déconnexion...' : 'Déconnecter'}
+                    </Button>
+                  </>
                 )}
               </div>
 
@@ -123,6 +227,9 @@ export default function IntegrationsPage() {
                     </span>
                   </div>
                   <p className="text-green-600 text-sm mt-1">
+                    {googleEmail && `Connecté avec : ${googleEmail}`}
+                  </p>
+                  <p className="text-green-600 text-sm">
                     Vos événements Google Calendar apparaîtront dans votre calendrier ChronoFlow.
                   </p>
                 </div>

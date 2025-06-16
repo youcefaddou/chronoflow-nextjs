@@ -8,8 +8,7 @@ const userSchema = new mongoose.Schema({
 	avatar: { type: String }, // Profile picture URL
 	isVerified: { type: Boolean, default: false },
 	createdAt: { type: Date, default: Date.now },
-	lastSignInAt: { type: Date },
-	provider: { type: String }, // for OAuth
+	lastSignInAt: { type: Date },	provider: { type: String }, // for OAuth
 	providerId: { type: String }, // for OAuth
 	googleCalendarTokens: {
 		access_token: { type: String },
@@ -17,6 +16,13 @@ const userSchema = new mongoose.Schema({
 		scope: { type: String },
 		token_type: { type: String },
 		expiry_date: { type: Number },
+	},
+	googleCalendar: {
+		connected: { type: Boolean, default: false },
+		accessToken: { type: String },
+		refreshToken: { type: String },
+		email: { type: String },
+		connectedAt: { type: Date }
 	},
 })
 

@@ -1,18 +1,33 @@
 import { NextResponse } from 'next/server'
-import { connectMongo } from '../../../../../lib/mongoose.js'
-import GoogleEventTime from '../../../../../models/google-event-time.js'
+import { connectMongo } from '../../../../../lib/mongodb'
+import GoogleEventTime from '../../../../../models/google-event-time'
 import jwt from 'jsonwebtoken'
 
 async function getUser(request) {
   try {
-    const token = request.cookies.get('token')?.value
+    // Récupérer le token depuis les cookies ou l'en-tête Authorization
+    const authHeader = request.headers.get('authorization')
+    const cookieHeader = request.headers.get('cookie')
+    
+    let token = null
+    
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.replace('Bearer ', '')
+    } else if (cookieHeader) {
+      const cookies = cookieHeader.split('; ')
+      const tokenCookie = cookies.find(cookie => cookie.startsWith('token='))
+      if (tokenCookie) {
+        token = tokenCookie.split('=')[1]
+      }
+    }
+    
     if (!token) {
       throw new Error('No token found')
     }
     
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret')
+    const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET)
     return { id: decoded.userId }
-  } catch (error) {
+  } catch {
     throw new Error('Invalid token')
   }
 }

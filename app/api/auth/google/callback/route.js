@@ -1,8 +1,58 @@
 import { google } from 'googleapis'
 import { NextResponse } from 'next/server'
 import jwt from 'jsonwebtoken'
-import { connectMongo } from '../../../../../lib/mongodb'
+import { connectMongo } from '../../../../../lib/mongoose'
 import User from '../../../../../models/user'
+import LoginLog from '../../../../../models/login-log'
+import Session from '../../../../../models/session'
+
+// Fonction pour extraire l'IP du client
+function getClientIP(request) {
+  const forwarded = request.headers.get('x-forwarded-for')
+  const realIP = request.headers.get('x-real-ip')
+  
+  if (forwarded) {
+    return forwarded.split(',')[0].trim()
+  }
+  if (realIP) {
+    return realIP
+  }
+  
+  return request.ip || 'IP inconnue'
+}
+
+// Fonction pour extraire les informations de l'appareil
+function getDeviceInfo(request) {
+  const userAgent = request.headers.get('user-agent') || ''
+  
+  // Extraction simple du navigateur et OS
+  let browser = 'Navigateur inconnu'
+  let os = 'OS inconnu'
+  
+  if (userAgent.includes('Chrome')) {
+    browser = 'Chrome'
+  } else if (userAgent.includes('Firefox')) {
+    browser = 'Firefox'
+  } else if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) {
+    browser = 'Safari'
+  } else if (userAgent.includes('Edge')) {
+    browser = 'Edge'
+  }
+  
+  if (userAgent.includes('Windows')) {
+    os = 'Windows'
+  } else if (userAgent.includes('Mac')) {
+    os = 'macOS'
+  } else if (userAgent.includes('Linux')) {
+    os = 'Linux'
+  } else if (userAgent.includes('Android')) {
+    os = 'Android'
+  } else if (userAgent.includes('iOS')) {
+    os = 'iOS'
+  }
+  
+  return `${browser} sur ${os}`
+}
 
 const oauth2Client = new google.auth.OAuth2(
 	process.env.GOOGLE_CLIENT_ID,
@@ -11,6 +61,9 @@ const oauth2Client = new google.auth.OAuth2(
 )
 
 export async function GET(request) {
+	const clientIP = getClientIP(request)
+	const deviceInfo = getDeviceInfo(request)
+	
 	try {
 		const { searchParams } = new URL(request.url)
 		const code = searchParams.get('code')
@@ -77,7 +130,6 @@ export async function GET(request) {
 
 		// Check if user exists
 		let user = await User.findOne({ email: userInfo.email })
-
 		if (!user) {
 			// Create new user
 			user = new User({
@@ -96,6 +148,47 @@ export async function GET(request) {
 				user.isVerified = true
 				await user.save()
 			}
+		}
+
+		// Update last sign in date
+		await User.findByIdAndUpdate(user._id, { 
+			lastSignInAt: new Date() 
+		})
+
+		// Enregistrer la connexion réussie
+		try {
+			await LoginLog.create({
+				userId: user._id,
+				date: new Date(),
+				ip: clientIP,
+				device: deviceInfo,
+				success: true
+			})
+		} catch (logError) {
+			console.error('Error logging Google login:', logError)
+		}
+
+		// Créer ou mettre à jour la session de l'appareil
+		try {
+			// Vérifier si une session existe déjà pour cet appareil/IP
+			const existingSession = await Session.findOne({
+				userId: user._id,
+				ip: clientIP,
+				device: deviceInfo
+			})
+
+			if (!existingSession) {
+				// Créer une nouvelle session si elle n'existe pas
+				await Session.create({
+					userId: user._id,
+					device: deviceInfo,
+					browser: deviceInfo, // Pour compatibilité avec le schéma
+					ip: clientIP,
+					createdAt: new Date()
+				})
+			}
+		} catch (sessionError) {
+			console.error('Error creating Google session:', sessionError)
 		}
 
 		// Generate JWT token

@@ -29,10 +29,11 @@ export default function PasswordChange({ onBack }) {
           const data = await response.json()
           setAuthType(data)
         } else {
-          console.error('Error fetching auth type')
+          setError('Erreur lors de la vérification du type de compte')
         }
       } catch (error) {
         console.error('Error fetching auth type:', error)
+        setError('Erreur lors de la vérification du type de compte')
       } finally {
         setIsLoadingAuthType(false)
       }
@@ -183,7 +184,7 @@ export default function PasswordChange({ onBack }) {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Ancien mot de passe */}
+              {/* Old Password */}
               <div>
                 <label htmlFor="oldPassword" className="block text-sm font-medium text-gray-700 mb-1">
                   {t('settings.items.oldPassword') || 'Ancien mot de passe'}
@@ -195,7 +196,7 @@ export default function PasswordChange({ onBack }) {
                     name="oldPassword"
                     value={formData.oldPassword}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
                     required
                   />
                   <button
@@ -212,7 +213,7 @@ export default function PasswordChange({ onBack }) {
                 </div>
               </div>
 
-              {/* Nouveau mot de passe */}
+              {/* New Password */}
               <div>
                 <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-1">
                   {t('settings.items.newPassword') || 'Nouveau mot de passe'}
@@ -224,7 +225,7 @@ export default function PasswordChange({ onBack }) {
                     name="newPassword"
                     value={formData.newPassword}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
                     required
                   />
                   <button
@@ -241,10 +242,10 @@ export default function PasswordChange({ onBack }) {
                 </div>
               </div>
 
-              {/* Confirmer le nouveau mot de passe */}
+              {/* Confirm Password */}
               <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('settings.items.confirmPassword') || 'Confirmer le nouveau mot de passe'}
+                  {t('settings.items.confirmPassword') || 'Confirmer le mot de passe'}
                 </label>
                 <div className="relative">
                   <input
@@ -253,7 +254,7 @@ export default function PasswordChange({ onBack }) {
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
                     required
                   />
                   <button
@@ -270,21 +271,18 @@ export default function PasswordChange({ onBack }) {
                 </div>
               </div>
 
-              {/* Bouton de soumission */}
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isLoading ? (
-                  <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    {t('common.loading') || 'Changement en cours...'}
-                  </div>
-                ) : (
-                  t('settings.items.changePassword') || 'Changer le mot de passe'
-                )}
-              </button>
+              <div className="pt-4">
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                  {isLoading 
+                    ? (t('common.loading') || 'Chargement...') 
+                    : (t('settings.items.changePassword') || 'Changer le mot de passe')
+                  }
+                </button>
+              </div>
             </form>
           </div>
         )}

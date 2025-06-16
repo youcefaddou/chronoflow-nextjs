@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import jwt from 'jsonwebtoken'
-import LoginLog from '../../../models/login-log'
-import { connectMongo } from '../../../lib/mongoose'
+import { connectMongo } from '../../../../lib/mongoose'
+import User from '../../../../models/user'
 
 async function getUser(request) {
   try {
@@ -31,27 +31,28 @@ export async function GET(request) {
     // Connexion à la base de données
     await connectMongo()
 
-    // Récupérer l'historique des connexions pour cet utilisateur
-    // Limiter aux 50 dernières connexions et trier par date décroissante
-    const loginHistory = await LoginLog.find({ userId: user.id })
-      .sort({ date: -1 })
-      .limit(50)
-      .lean()
+    // Récupérer les données utilisateur
+    const userData = await User.findById(user.id).select('password googleId email')
+    if (!userData) {
+      return NextResponse.json(
+        { error: 'Utilisateur non trouvé' },
+        { status: 404 }
+      )
+    }
 
-    // Formater les données pour le frontend
-    const formattedHistory = loginHistory.map(log => ({
-      _id: log._id.toString(),
-      date: log.date,
-      ip: log.ip || 'IP inconnue',
-      device: log.device || 'Appareil inconnu',
-      success: log.success
-    }))
+    // Déterminer le type d'authentification
+    const authType = {
+      hasPassword: !!userData.password,
+      hasGoogleAuth: !!userData.googleId,
+      email: userData.email,
+      canChangePassword: !!userData.password
+    }
 
-    return NextResponse.json(formattedHistory, { status: 200 })
+    return NextResponse.json(authType, { status: 200 })
   } catch (error) {
-    console.error('Error fetching login history:', error)
+    console.error('Error fetching auth type:', error)
     return NextResponse.json(
-      { error: 'Erreur lors du chargement de l\'historique des connexions' },
+      { error: 'Erreur lors de la récupération du type d\'authentification' },
       { status: 500 }
     )
   }

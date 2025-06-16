@@ -1,7 +1,54 @@
 import { NextResponse } from 'next/server'
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
+import { connectMongo } from '../../../../lib/mongoose'
+import User from '../../../../models/user'
+
+async function getUser(request) {
+  try {
+    const token = request.cookies.get('token')?.value
+    if (!token) {
+      throw new Error('No token found')
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret')
+    return { id: decoded.userId }
+  } catch (error) {
+    console.error('Auth error:', error)
+    throw new Error('Invalid token')
+  }
+}
 
 export async function POST(request) {
   try {
+    // Vérifier l'authentification
+    const user = await getUser(request)
+    if (!user || !user.id) {
+      return NextResponse.json(
+        { error: 'Non autorisé' },
+        { status: 401 }
+      )
+    }
+
+    // Connexion à la base de données
+    await connectMongo()
+
+    // Récupérer les données utilisateur
+    const userData = await User.findById(user.id)
+    if (!userData) {
+      return NextResponse.json(
+        { error: 'Utilisateur non trouvé' },
+        { status: 404 }
+      )
+    }
+
+    // Vérifier si l'utilisateur a un mot de passe (connexion classique)
+    if (!userData.password) {
+      return NextResponse.json(
+        { error: 'Votre compte est connecté via Google. Vous ne pouvez pas changer votre mot de passe ici.' },
+        { status: 400 }
+      )
+    }
+
     const body = await request.json()
     const { oldPassword, newPassword } = body
 
@@ -20,22 +67,25 @@ export async function POST(request) {
       )
     }
 
-    // Simuler la vérification de l'ancien mot de passe
-    // Dans un vrai projet, vous vérifieriez le mot de passe avec bcrypt ou similar
-    if (oldPassword !== 'password123') { // Simulation
+    // Vérifier l'ancien mot de passe
+    const isOldPasswordValid = await bcrypt.compare(oldPassword, userData.password)
+    if (!isOldPasswordValid) {
       return NextResponse.json(
         { error: 'Ancien mot de passe incorrect' },
         { status: 401 }
       )
     }
 
-    // Simuler la mise à jour du mot de passe
-    // Dans un vrai projet, vous hasheriez le nouveau mot de passe et le sauvegarderiez
-    console.log('Simulation: Changement de mot de passe pour l\'utilisateur')
-    
-    // Simuler un délai de traitement
-    await new Promise(resolve => setTimeout(resolve, 800))
-    
+    // Hasher le nouveau mot de passe
+    const saltRounds = 12
+    const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds)
+
+    // Mettre à jour le mot de passe
+    await User.findByIdAndUpdate(user.id, {
+      password: hashedNewPassword,
+      updatedAt: new Date()
+    })
+
     return NextResponse.json(
       { 
         success: true, 
@@ -51,3 +101,4 @@ export async function POST(request) {
     )
   }
 }
+
