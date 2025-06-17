@@ -5,9 +5,11 @@ module.exports = {
     './components/**/*.{js,jsx,ts,tsx}',
     './lib/**/*.{js,jsx,ts,tsx}',
     './pages/**/*.{js,jsx,ts,tsx}',
-  ],
-  theme: {
+  ],  theme: {
     extend: {
+      screens: {
+        'xs': '475px',
+      },
       colors: {
         black: '#000',
         gray: {

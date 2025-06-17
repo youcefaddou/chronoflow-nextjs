@@ -367,49 +367,291 @@ body {
   pointer-events: none;
 }
 
-/* Animations responsives - réduites sur mobile */
-@media (prefers-reduced-motion: reduce) {
-  .animate-fade-in-up,
-  .animate-fade-in-left,
-  .animate-fade-in-right,
-  .animate-slide-in-up,
-  .animate-float,
-  .animate-glow,
-  .animate-particle {
-    animation: none;
+/* Responsive utilities for dashboard */
+@layer utilities {
+  /* Mobile-first responsive classes */
+  .responsive-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4;
   }
   
-  .hover-lift:hover,
-  .hover-scale:hover,
-  .hover-rotate:hover {
-    transform: none;
+  .responsive-flex {
+    @apply flex flex-col sm:flex-row gap-4;
+  }
+  
+  .responsive-padding {
+    @apply p-3 sm:p-4 lg:p-6;
+  }
+  
+  .responsive-margin {
+    @apply m-3 sm:m-4 lg:m-6;
+  }
+  
+  .responsive-text {
+    @apply text-sm sm:text-base lg:text-lg;
+  }
+  
+  .responsive-heading {
+    @apply text-lg sm:text-xl lg:text-2xl xl:text-3xl;
+  }
+  
+  /* Dashboard specific responsive classes */
+  .dashboard-header {
+    @apply bg-white shadow-sm border-b p-3 sm:p-4 lg:p-6;
+  }
+  
+  .dashboard-content {
+    @apply flex-1 p-3 sm:p-4 lg:p-6 overflow-hidden;
+  }
+  
+  .dashboard-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6;
+  }
+  
+  /* Button responsive classes */
+  .btn-responsive {
+    @apply px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base;
+  }
+  
+  .btn-responsive-sm {
+    @apply px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm;
+  }
+  
+  /* Card responsive classes */
+  .card-responsive {
+    @apply p-3 sm:p-4 lg:p-6 rounded-lg shadow-sm;
+  }
+  
+  /* Mobile-first responsive visibility */
+  .mobile-only {
+    @apply block sm:hidden;
+  }
+  
+  .desktop-only {
+    @apply hidden sm:block;
+  }
+  
+  .tablet-up {
+    @apply hidden md:block;
+  }
+  
+  .mobile-tablet {
+    @apply block lg:hidden;
   }
 }
 
-/* Optimisations performance mobile */
+/* ===== DASHBOARD RESPONSIVE OPTIMIZATIONS ===== */
+
+/* Prevent horizontal scroll on mobile */
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: #f9fafb;
+}
+
+/* Mobile touch optimization */
 @media (max-width: 768px) {
-  .animate-gradient {
-    animation-duration: 10s;
+  .dashboard-container {
+    flex-direction: column;
   }
   
-  .animate-float {
-    animation-duration: 4s;
+  /* Improve touch targets */
+  button, 
+  [role="button"],
+  .clickable {
+    min-height: 44px;
+    min-width: 44px;
   }
   
-  .hover-lift,
-  .hover-scale,
-  .hover-rotate {
-    transition-duration: 0.2s;
+  /* Prevent zoom on input focus */
+  input, 
+  select, 
+  textarea {
+    font-size: 16px !important;
+  }
+  
+  /* Smooth scrolling on mobile */
+  .overflow-auto,
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
   }
 }
 
-/* Focus states */
-button:focus,
-a:focus,
-input:focus,
-textarea:focus {
-	outline: 2px solid #3b82f6;
-	outline-offset: 2px;
+/* Responsive grid improvements */
+.stats-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+@media (max-width: 640px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
+/* Card responsive */
+.responsive-card {
+  background: white;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+
+@media (max-width: 768px) {
+  .responsive-card {
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .responsive-card {
+    padding: 0.5rem;
+    margin: 0 -0.25rem;
+  }
+}
+
+/* Button groups responsive */
+.button-group-responsive {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .button-group-responsive {
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+  
+  .button-group-responsive > * {
+    width: 100%;
+  }
+}
+
+/* Modal responsive */
+.modal-responsive {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-content-responsive {
+  background: white;
+  border-radius: 0.5rem;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+@media (max-width: 640px) {
+  .modal-responsive {
+    padding: 0.5rem;
+    align-items: flex-end;
+  }
+  
+  .modal-content-responsive {
+    border-radius: 0.5rem 0.5rem 0 0;
+    max-height: 80vh;
+  }
+}
+
+/* Focus improvements for accessibility */
+.focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Smooth transitions */
+.transition-smooth {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Loading states */
+.loading-skeleton {
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+  background-size: 200% 100%;
+  animation: loading-shimmer 2s infinite;
+}
+
+@keyframes loading-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Utility classes for responsive design */
+.responsive-text {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .responsive-text {
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+}
+
+.responsive-spacing {
+  padding: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .responsive-spacing {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .responsive-spacing {
+    padding: 0.75rem;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .dashboard-container {
+    background-color: #111827;
+    color: #f9fafb;
+  }
+  
+  .responsive-card {
+    background-color: #1f2937;
+    border-color: #374151;
+    color: #f9fafb;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .responsive-card {
+    border-width: 2px;
+  }
+  
+  button {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .transition-smooth,
+  .loading-skeleton {
+    animation: none;
+    transition: none;
+  }
 }
 
 /* Fix ULTRA SPÉCIFIQUE pour forcer gap-1 sur les liens de navigation de la sidebar */

@@ -256,137 +256,153 @@ export default function DashboardPage() {	const { t } = useTranslation()
 				<p className="text-red-600">{t('auth.userNotConnected', 'Utilisateur non connecté')}</p>
 			</div>
 		)
-	}
-	return (
-		<div className="min-h-screen bg-gray-50">			{/* Header avec timer et contrôles */}
+	}	return (
+		<div className="flex flex-col min-h-screen bg-gray-50">
+			{/* Header avec timer et contrôles - Responsive */}
 			<div className="bg-white shadow-sm border-b">
-				{/* Messages d'import */}				{timerMessage && (
-					<div className="bg-blue-50 border-l-4 border-blue-400 p-4">
-						<p className="text-blue-700 font-medium">{timerMessage}</p>
+				{/* Messages d'import */}
+				{timerMessage && (
+					<div className="bg-blue-50 border-l-4 border-blue-400 p-3 sm:p-4">
+						<p className="text-blue-700 font-medium text-sm sm:text-base">{timerMessage}</p>
 					</div>
 				)}
 				{importMessage && (
-					<div className="bg-green-50 border-l-4 border-green-400 p-4">
-						<p className="text-green-700 font-medium">{importMessage}</p>
+					<div className="bg-green-50 border-l-4 border-green-400 p-3 sm:p-4">
+						<p className="text-green-700 font-medium text-sm sm:text-base">{importMessage}</p>
 					</div>
 				)}
 				{importError && (
-					<div className="bg-red-50 border-l-4 border-red-400 p-4">
-						<p className="text-red-700 font-medium">{importError}</p>
+					<div className="bg-red-50 border-l-4 border-red-400 p-3 sm:p-4">
+						<p className="text-red-700 font-medium text-sm sm:text-base">{importError}</p>
 					</div>
 				)}
-				
-				<div className="flex items-center justify-between p-6">
-					{/* Section gauche - Timer moderne */}
-					<div className="flex items-center space-x-6">
-						<Timer 
-							onSaveTimer={(elapsedSeconds) => {
-								setElapsedSecondsToSave(elapsedSeconds)
-								setShowSaveTimer(true)
-							}}
-						/>
-					</div>
+						<div className="p-3 sm:p-4 lg:p-6">
+					{/* Layout responsive - Flexbox adaptatif */}
+					<div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+						{/* Section Timer - Toujours visible en premier */}
+						<div className="flex items-center justify-center lg:justify-start flex-shrink-0">
+							<Timer 
+								onSaveTimer={(elapsedSeconds) => {
+									setElapsedSecondsToSave(elapsedSeconds)
+									setShowSaveTimer(true)
+								}}
+							/>
+						</div>
 
-					{/* Section droite - Actions et navigation */}
-					<div className="flex items-center space-x-3">
-						{/* Boutons de vue */}
-						<div className="flex items-center bg-gray-100 rounded-lg p-1">
-							<button
-								onClick={() => setViewMode('calendar')}
-								className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
-									viewMode === 'calendar' 
-										? 'bg-white text-blue-600 shadow-sm' 
-										: 'text-gray-600 hover:text-gray-900'
-								}`}
-								title={t('dashboard.calendar', 'Calendrier')}
-							>
-								<Calendar className="w-4 h-4" />
-								<span className="text-sm font-medium">{t('dashboard.calendar', 'Calendrier')}</span>
-							</button>
-							<button
-								onClick={() => setViewMode('list')}
-								className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
-									viewMode === 'list' 
-										? 'bg-white text-blue-600 shadow-sm' 
-										: 'text-gray-600 hover:text-gray-900'
-								}`}
-								title={t('dashboard.tasks', 'Tâches')}
-							>
-								<List className="w-4 h-4" />
-								<span className="text-sm font-medium">{t('dashboard.tasks', 'Tâches')}</span>
-							</button>
-						</div>						{/* Actions rapides */}
-						{googleTasksCount > 0 && (
-							<div className="flex items-center space-x-2 px-3 py-2 bg-green-50 border border-green-200 rounded-lg">
-								<div className="w-2 h-2 bg-green-500 rounded-full"></div>
-								<span className="text-sm text-green-700 font-medium">
-									{googleTasksCount} tâches Google Calendar
-								</span>
+						{/* Section Actions - Layout adaptatif */}
+						<div className="flex flex-col gap-3 lg:gap-2 min-w-0 flex-1 lg:flex-initial">
+							{/* Boutons de vue - Responsive */}
+							<div className="flex items-center bg-gray-100 rounded-lg p-1 w-full sm:w-auto sm:self-center lg:self-end">
+								<button
+									onClick={() => setViewMode('calendar')}
+									className={`flex items-center justify-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-md transition-colors flex-1 sm:flex-initial ${
+										viewMode === 'calendar' 
+											? 'bg-white text-blue-600 shadow-sm' 
+											: 'text-gray-600 hover:text-gray-900'
+									}`}
+									title={t('dashboard.calendar', 'Calendrier')}
+								>
+									<Calendar className="w-4 h-4" />
+									<span className="text-xs sm:text-sm font-medium">{t('dashboard.calendar', 'Calendrier')}</span>
+								</button>
+								<button
+									onClick={() => setViewMode('list')}
+									className={`flex items-center justify-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-md transition-colors flex-1 sm:flex-initial ${
+										viewMode === 'list' 
+											? 'bg-white text-blue-600 shadow-sm' 
+											: 'text-gray-600 hover:text-gray-900'
+									}`}
+									title={t('dashboard.tasks', 'Tâches')}
+								>
+									<List className="w-4 h-4" />
+									<span className="text-xs sm:text-sm font-medium">{t('dashboard.tasks', 'Tâches')}</span>
+								</button>
 							</div>
-						)}
-						
-						<button
-							onClick={() => setShowFocusZone(true)}
-							className="flex items-center space-x-2 px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors"
-							title={t('dashboard.focusZone', 'Zone de focus')}
-						>
-							<Focus className="w-4 h-4" />
-							<span className="text-sm font-medium">{t('dashboard.focusZone', 'Focus')}</span>
-						</button><button
-							onClick={handleImportGoogleCalendar}
-							disabled={importLoading}
-							className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all font-medium ${
-								importLoading 
-									? 'bg-gray-400 text-white cursor-not-allowed' 
-									: 'bg-blue-500 hover:bg-blue-600 text-white hover:scale-105 shadow-lg'
-							}`}
-							title={t('dashboard.importCalendar', 'Importer Google Calendar')}
-						>
-							{importLoading ? (
-								<div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-							) : (
-								<CloudDownload className="w-4 h-4" />
-							)}
-							<span className="text-sm">
-								{importLoading ? 'Import...' : t('dashboard.import', 'Importer')}
-							</span>
-							{importStats && (
-								<span className="bg-white text-blue-600 px-2 py-0.5 rounded-full text-xs font-semibold">
-									+{importStats.imported}
-								</span>
-							)}
-						</button>
 
-						<button
-							onClick={() => setShowExportModal(true)}
-							className="flex items-center space-x-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
-							title={t('dashboard.exportTasks', 'Exporter les tâches')}						>
-							<Download className="w-4 h-4" />
-							<span className="text-sm font-medium">{t('dashboard.export', 'Exporter')}</span>
-						</button>
-					</div>
+							{/* Container des actions - Empilage intelligent */}
+							<div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+								{/* Google Tasks status - Placement adaptatif */}
+								{googleTasksCount > 0 && (
+									<div className="flex items-center justify-center space-x-2 px-3 py-2 bg-green-50 border border-green-200 rounded-lg order-first sm:order-none">
+										<div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+										<span className="text-sm text-green-700 font-medium truncate">
+											{googleTasksCount} tâches Google Calendar
+										</span>
+									</div>
+								)}
+								
+								{/* Actions principales - Grid adaptatif */}
+								<div className="grid grid-cols-1 xs:grid-cols-3 sm:flex sm:flex-row gap-2 flex-1 sm:flex-initial">
+									<button
+										onClick={() => setShowFocusZone(true)}
+										className="flex items-center justify-center space-x-1 sm:space-x-2 px-2 sm:px-3 lg:px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors text-sm font-medium min-w-0"
+										title={t('dashboard.focusZone', 'Zone de focus')}
+									>
+										<Focus className="w-4 h-4 flex-shrink-0" />
+										<span className="truncate">{t('dashboard.focusZone', 'Focus')}</span>
+									</button>
+
+									<button
+										onClick={handleImportGoogleCalendar}
+										disabled={importLoading}
+										className={`flex items-center justify-center space-x-1 sm:space-x-2 px-2 sm:px-3 lg:px-4 py-2 rounded-lg transition-all font-medium text-sm min-w-0 ${
+											importLoading 
+												? 'bg-gray-400 text-white cursor-not-allowed' 
+												: 'bg-blue-500 hover:bg-blue-600 text-white hover:scale-105 shadow-lg'
+										}`}
+										title={t('dashboard.importCalendar', 'Importer Google Calendar')}
+									>
+										{importLoading ? (
+											<div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin flex-shrink-0"></div>
+										) : (
+											<CloudDownload className="w-4 h-4 flex-shrink-0" />
+										)}
+										<span className="truncate">
+											{importLoading ? 'Import...' : t('dashboard.import', 'Importer')}
+										</span>
+										{importStats && (
+											<span className="hidden lg:inline bg-white text-blue-600 px-1.5 py-0.5 rounded-full text-xs font-semibold ml-1 flex-shrink-0">
+												+{importStats.imported}
+											</span>
+										)}
+									</button>
+
+									<button
+										onClick={() => setShowExportModal(true)}
+										className="flex items-center justify-center space-x-1 sm:space-x-2 px-2 sm:px-3 lg:px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors text-sm font-medium min-w-0"
+										title={t('dashboard.exportTasks', 'Exporter les tâches')}
+									>
+										<Download className="w-4 h-4 flex-shrink-0" />
+										<span className="truncate">{t('dashboard.export', 'Exporter')}</span>
+									</button>
+								</div>
+							</div>
+						</div>					</div>
 				</div>
-			</div>
-			
-			{/* Zone de contenu principal */}
-			<div className="flex-1 p-6">				{viewMode === 'calendar' ? (
-					<CalendarView
-						user={user}
-						refreshKey={taskRefreshKey}
-						lastSavedTaskId={lastSavedTaskId}
-						lastSavedDuration={lastSavedDuration}
-						onRefresh={handleTaskUpdate}
-						onEventsRefetch={handleEventsRefetch}
-					/>				) : (
-					<TaskListView
-						tasks={mergedEvents} // Utiliser les événements fusionnés au lieu des tâches simples
-						onTaskUpdate={handleTaskUpdate}
-						user={user}
-						lastSavedTaskId={lastSavedTaskId}
-						lastSavedDuration={lastSavedDuration}
-						refreshKey={taskRefreshKey}
-					/>
-				)}
+			</div>			
+			{/* Zone de contenu principal - Responsive */}
+			<div className="flex-1 p-3 sm:p-4 lg:p-6 overflow-hidden">
+				<div className="h-full">
+					{viewMode === 'calendar' ? (
+						<CalendarView
+							user={user}
+							refreshKey={taskRefreshKey}
+							lastSavedTaskId={lastSavedTaskId}
+							lastSavedDuration={lastSavedDuration}
+							onRefresh={handleTaskUpdate}
+							onEventsRefetch={handleEventsRefetch}
+						/>
+					) : (
+						<TaskListView
+							tasks={mergedEvents} // Utiliser les événements fusionnés au lieu des tâches simples
+							onTaskUpdate={handleTaskUpdate}
+							user={user}
+							lastSavedTaskId={lastSavedTaskId}
+							lastSavedDuration={lastSavedDuration}
+							refreshKey={taskRefreshKey}
+						/>
+					)}
+				</div>
 			</div>{/* Modales */}
 			{showFocusZone && (
 				<FocusZoneModal

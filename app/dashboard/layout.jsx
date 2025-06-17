@@ -6,46 +6,63 @@ import GlobalTimerProvider from '../../components/timer/global-timer-provider'
 import { DashboardUserProvider, useDashboardUser } from '../../contexts/dashboard-user-context'
 import { TaskUpdateProvider, useTaskUpdate } from '../../contexts/task-update-context'
 import I18nProvider from '../../components/i18n-provider'
+import { LoadingScreen } from '../../components/ui/loading-components'
+import { ErrorMessage } from '../../components/ui/error-components'
+import { useMobileMenu } from '../../hooks/use-responsive'
 import '../../styles/fullcalendar.css'
 
 function DashboardContent({ children }) {
-	const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
-	const { user, loading } = useDashboardUser()
+	const { user, loading, error } = useDashboardUser()
 	const { triggerUpdate } = useTaskUpdate()
-
-	const handleMobileMenuClose = () => {
-		setIsMobileSidebarOpen(false)
-	}
+	const { isMenuOpen, toggleMenu, closeMenu, isMobile } = useMobileMenu()
 
 	if (loading) {
+		return <LoadingScreen message="Loading your dashboard..." />
+	}
+
+	if (error) {
 		return (
-			<div className="flex items-center justify-center min-h-screen">
-				<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+			<div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+				<ErrorMessage
+					title="Dashboard Error"
+					message="Unable to load your dashboard. Please try again."
+					onRetry={() => window.location.reload()}
+					onGoHome={() => window.location.href = '/'}
+				/>
 			</div>
 		)
 	}
 
 	if (!user) {
-		return (
-			<div className="flex items-center justify-center min-h-screen">
-				<p className="text-gray-600">User not connected. Redirecting...</p>
-			</div>
-		)
-	}
+		return <LoadingScreen message="Redirecting to login..." />
+	}	
 	return (
-		<div className="flex h-screen bg-gray-50">
+		<div className="dashboard-container">
 			{/* Sidebar */}
 			<Sidebar 
-				isMobileOpen={isMobileSidebarOpen}
-				onMobileClose={handleMobileMenuClose}
+				isMobileOpen={isMenuOpen}
+				onMobileClose={closeMenu}
+				onMobileToggle={toggleMenu}
 				user={user}
 			/>
 			
-			{/* Main content */}
-			<main className="flex-1 overflow-auto">
-				<GlobalTimerProvider onTaskUpdate={triggerUpdate}>
-					{children}
-				</GlobalTimerProvider>
+			{/* Mobile overlay */}
+			{isMenuOpen && isMobile && (
+				<div 
+					className="dashboard-sidebar-overlay open"
+					onClick={closeMenu}
+				/>
+			)}
+					{/* Main content */}
+			<main className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${
+				isMobile ? 'w-full' : ''
+			}`}>
+				{/* Content area */}
+				<div className="flex-1 overflow-auto bg-gray-50">
+					<GlobalTimerProvider onTaskUpdate={triggerUpdate}>
+						{children}
+					</GlobalTimerProvider>
+				</div>
 			</main>
 		</div>
 	)
