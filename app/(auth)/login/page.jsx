@@ -121,15 +121,21 @@ export default function LoginPage() {
 			</div>
 		)
 	}
-
 	return (
-		<div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-rose-100 to-blue-100 px-4">
-			<div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
-				<h1 className="text-2xl font-bold mb-6 text-center text-rose-700">
+		<div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 px-4 relative overflow-hidden">
+			{/* Particules de fond animées */}
+			<div className="absolute inset-0 overflow-hidden pointer-events-none">
+				<div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-300/20 rounded-full blur-3xl animate-pulse"></div>
+				<div className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-300/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+				<div className="absolute top-1/3 left-1/3 w-64 h-64 bg-indigo-300/15 rounded-full blur-2xl animate-pulse delay-500"></div>
+			</div>
+			
+			<div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8 w-full max-w-md relative z-10 hover:shadow-2xl transition-all duration-300">
+				<h1 className="text-2xl font-bold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
 					{t('auth.login.title')}
 				</h1>
 				{error && (
-					<div className="bg-rose-100 text-rose-700 px-3 py-2 rounded text-sm mb-4">
+					<div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm mb-4">
 						{error}
 					</div>
 				)}
@@ -137,38 +143,35 @@ export default function LoginPage() {
 					<div>
 						<label className="block mb-1 font-medium text-gray-700" htmlFor="email">
 							{t('auth.signup.email')}
-						</label>
-						<input
+						</label>						<input
 							id="email"
 							type="email"
 							autoComplete="email"
-							className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-400 transition"
+							className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm hover:bg-white"
 							{...register('email')}
 							disabled={loading}
 						/>
 						{errors.email && (
-							<p className="text-rose-600 text-sm mt-1">{errors.email.message}</p>
+							<p className="text-red-600 text-sm mt-1">{errors.email.message}</p>
 						)}
 					</div>
 					<div>
 						<label className="block mb-1 font-medium text-gray-700" htmlFor="password">
 							{t('auth.login.password')}
-						</label>
-						<input
+						</label>						<input
 							id="password"
 							type="password"
 							autoComplete="current-password"
-							className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-400 transition"
+							className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm hover:bg-white"
 							{...register('password')}
 							disabled={loading}
 						/>
 						{errors.password && (
-							<p className="text-rose-600 text-sm mt-1">{errors.password.message}</p>
+							<p className="text-red-600 text-sm mt-1">{errors.password.message}</p>
 						)}
-					</div>
-					<button
+					</div>					<button
 						type="submit"
-						className="cursor-pointer w-full bg-rose-600 hover:bg-rose-700 text-white font-semibold py-2 rounded-lg transition disabled:opacity-60"
+						className="cursor-pointer w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 rounded-lg transition-all duration-300 disabled:opacity-60 transform hover:scale-[1.02] hover:shadow-lg"
 						disabled={loading}
 					>
 						{loading ? t('auth.login.signing') : t('auth.login.signIn')}
@@ -176,13 +179,12 @@ export default function LoginPage() {
 				</form>
 				
 				{/* Google Auth */}
-				<div className="mt-4">
-					<button
+				<div className="mt-4">					<button
 						type="button"
 						onClick={() => {
 							window.location.assign('/api/auth/google')
 						}}
-						className="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold py-2 rounded-lg transition flex items-center justify-center gap-2"
+						className="w-full bg-white/70 backdrop-blur-sm border border-gray-200 hover:bg-white hover:border-gray-300 text-gray-700 font-semibold py-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-[1.02] hover:shadow-md"
 					>
 						<svg className="w-5 h-5" viewBox="0 0 24 24">
 							<path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -192,11 +194,9 @@ export default function LoginPage() {
 						</svg>
 						{t('auth.login.googleSignIn')}
 					</button>
-				</div>
-
-				<div className="mt-6 text-center text-sm text-gray-600">
+				</div>				<div className="mt-6 text-center text-sm text-gray-600">
 					{t('auth.login.noAccount')}{' '}
-					<Link href="/signup" className="text-rose-600 hover:underline">
+					<Link href="/signup" className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-medium transition-all duration-300">
 						{t('auth.login.createAccount')}
 					</Link>
 				</div>

@@ -163,7 +163,8 @@ export function GlobalTimerProvider({ children }) {
 
 	const pauseTimer = () => {
 		dispatch({ type: TIMER_ACTIONS.PAUSE })
-	}	const stopTimer = (shouldShowSaveModal = false) => {
+	}	
+	const stopTimer = (shouldShowSaveModal = false) => {
 		// If shouldShowSaveModal is true, the caller will handle the save modal
 		// Otherwise, just stop the timer normally
 		if (!shouldShowSaveModal) {

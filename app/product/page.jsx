@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import Link from 'next/link'
 import { ProductCTAButton, FeatureCard, StatCard, TestimonialCard } from '../../components/product/product-components'
 import { ChronoThumbnail, CalendarThumbnail, ReportsThumbnail } from '../../components/product/video-thumbnails'
+import InteractiveMockup from '../../components/product/interactive-mockup'
 import {
     Clock,
     Calendar,
@@ -59,7 +60,7 @@ function VideoThumbnail({ videoSrc, thumbnailSrc, title, isPlaying, onPlay, clas
 
     // Fonction pour obtenir le thumbnail SVG approprié
     const getSVGThumbnail = () => {
-        switch(featureType) {
+        switch (featureType) {
             case 'timer':
                 return <ChronoThumbnail />
             case 'calendar':
@@ -82,7 +83,7 @@ function VideoThumbnail({ videoSrc, thumbnailSrc, title, isPlaying, onPlay, clas
 
     if (!isLoaded) {
         return (
-            <div 
+            <div
                 ref={thumbnailRef}
                 className={`relative aspect-video bg-gray-200 rounded-xl overflow-hidden animate-pulse ${className}`}
             >
@@ -111,9 +112,9 @@ function VideoThumbnail({ videoSrc, thumbnailSrc, title, isPlaying, onPlay, clas
                         </div>
 
                         {thumbnailSrc && !imageError ? (
-                            <img 
-                                src={thumbnailSrc} 
-                                alt={title} 
+                            <img
+                                src={thumbnailSrc}
+                                alt={title}
                                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                 loading="lazy"
                                 onError={() => setImageError(true)}
@@ -123,18 +124,18 @@ function VideoThumbnail({ videoSrc, thumbnailSrc, title, isPlaying, onPlay, clas
                                 {getSVGThumbnail()}
                             </div>
                         )}
-                        
+
                         {/* Overlay avec effet glassmorphism */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 group-hover:from-black/50 transition-all duration-500 flex items-center justify-center">
                             {/* Bouton Play ultra-stylé */}
                             <div className="relative">
                                 {/* Cercle externe pulsant */}
                                 <div className="absolute inset-0 w-24 h-24 bg-white/20 rounded-full animate-ping group-hover:animate-none opacity-75"></div>
-                                
+
                                 {/* Bouton principal */}
                                 <div className="relative w-24 h-24 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center transform group-hover:scale-110 transition-all duration-300 shadow-2xl border border-white/30">
                                     <Play className="w-12 h-12 text-blue-600 ml-1" />
-                                    
+
                                     {/* Effet de brillance */}
                                     <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                 </div>
@@ -153,13 +154,13 @@ function VideoThumbnail({ videoSrc, thumbnailSrc, title, isPlaying, onPlay, clas
                         </div>
 
                         {/* Effet de bord lumineux au hover */}
-                        <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" 
-                             style={{boxShadow: 'inset 0 0 0 2px rgba(59, 130, 246, 0.3)'}}></div>
+                        <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                            style={{ boxShadow: 'inset 0 0 0 2px rgba(59, 130, 246, 0.3)' }}></div>
                     </div>
                 </>
             ) : (
                 <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl bg-black">
-                    <video 
+                    <video
                         className="w-full h-full object-cover"
                         controls
                         autoPlay
@@ -169,10 +170,10 @@ function VideoThumbnail({ videoSrc, thumbnailSrc, title, isPlaying, onPlay, clas
                         <source src={videoSrc} type="video/mp4" />
                         <p className="text-white p-4">Votre navigateur ne supporte pas les vidéos HTML5.</p>
                     </video>
-                    
+
                     {/* Bouton fermer */}
                     <button
-                        onClick={(e) => {e.stopPropagation(); onPlay()}}
+                        onClick={(e) => { e.stopPropagation(); onPlay() }}
                         className="absolute top-4 right-4 w-10 h-10 bg-black/50 backdrop-blur-sm text-white rounded-full flex items-center justify-center hover:bg-black/70 transition-colors duration-200"
                     >
                         ✕
@@ -187,7 +188,7 @@ export default function ProductPage() {
     const { t } = useTranslation()
     const [activeTab, setActiveTab] = useState('freelances')
     const [isVideoPlaying, setIsVideoPlaying] = useState(false)
-    const [playingVideo, setPlayingVideo] = useState(null)    
+    const [playingVideo, setPlayingVideo] = useState(null)
     const [sectionsInView, setSectionsInView] = useState({})
     const [preloadedVideos, setPreloadedVideos] = useState(new Set())
     const heroRef = useRef(null)
@@ -199,7 +200,7 @@ export default function ProductPage() {
     // Preload vidéos critiques quand elles deviennent visibles
     const preloadVideo = (videoSrc) => {
         if (preloadedVideos.has(videoSrc)) return
-        
+
         const video = document.createElement('video')
         video.preload = 'metadata'
         video.src = videoSrc
@@ -213,12 +214,12 @@ export default function ProductPage() {
 
         const observer = new IntersectionObserver((entries) => {
             const newSectionsInView = { ...sectionsInView }
-            
+
             entries.forEach((entry) => {
                 const sectionName = entry.target.getAttribute('data-section')
                 if (entry.isIntersecting && sectionName) {
                     newSectionsInView[sectionName] = true
-                    
+
                     // Preload vidéos quand la section features devient visible
                     if (sectionName === 'features') {
                         features.forEach(feature => {
@@ -263,7 +264,7 @@ export default function ProductPage() {
                 setIsVideoPlaying(false)
             }
         }
-        
+
         if (isVideoPlaying) {
             document.addEventListener('keydown', handleEsc)
             // Prevent body scroll when modal is open
@@ -276,7 +277,7 @@ export default function ProductPage() {
             document.removeEventListener('keydown', handleEsc)
             document.body.style.overflow = 'unset'
         }
-    }, [isVideoPlaying])      
+    }, [isVideoPlaying])
     const features = [
         {
             icon: <Clock className="w-8 h-8 text-blue-600" />,
@@ -581,23 +582,23 @@ export default function ProductPage() {
                                         benefits={feature.benefits}
                                         reverse={index % 2 === 1}
                                     >                                        {feature.video && sectionsInView.features && (
-                                            <VideoThumbnail
-                                                videoSrc={feature.video}
-                                                thumbnailSrc={feature.thumbnail}
-                                                title={feature.videoTitle}
-                                                isPlaying={playingVideo === `feature-${index}`}
-                                                onPlay={() => setPlayingVideo(playingVideo === `feature-${index}` ? null : `feature-${index}`)}
-                                                className="shadow-2xl transform hover:scale-105 transition-transform duration-300 shine-effect"
-                                                lazy={true}
-                                                featureType={feature.type}
-                                            />
-                                        )}
+                                        <VideoThumbnail
+                                            videoSrc={feature.video}
+                                            thumbnailSrc={feature.thumbnail}
+                                            title={feature.videoTitle}
+                                            isPlaying={playingVideo === `feature-${index}`}
+                                            onPlay={() => setPlayingVideo(playingVideo === `feature-${index}` ? null : `feature-${index}`)}
+                                            className="shadow-2xl transform hover:scale-105 transition-transform duration-300 shine-effect"
+                                            lazy={true}
+                                            featureType={feature.type}
+                                        />
+                                    )}
                                     </FeatureCard>
                                 </div>
                             ))}
                         </div>
                     </div>
-                </section>                  
+                </section>
                 {/* Use Cases Section */}
                 <section ref={useCasesRef} data-section="useCases" className="py-16 bg-gradient-to-br from-blue-50 to-purple-50 relative">
                     {/* Background Decoration */}
@@ -606,7 +607,7 @@ export default function ProductPage() {
                         <div className="absolute bottom-10 right-10 w-24 h-24 bg-purple-200 rounded-full opacity-20 animate-pulse delay-1000"></div>
                         <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-green-200 rounded-full opacity-20 animate-pulse delay-500"></div>
                     </div>
-                    
+
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                         <div className="text-center mb-12 fade-in-up">
                             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -617,7 +618,7 @@ export default function ProductPage() {
                                     'Découvrez comment ChronoFlow transforme le quotidien des professionnels comme vous.'
                                 }
                             </p>
-                        </div>                          
+                        </div>
                         {/* Use Case Tabs */}
                         <div className="flex justify-center mb-8 fade-in-up">
                             <div className="bg-white rounded-2xl p-2 shadow-xl border border-gray-100 flex">
@@ -671,17 +672,9 @@ export default function ProductPage() {
                                                 role={useCase.testimonial.role}
                                             />
                                         </div>
-
                                         <div>
                                             <div className="bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl p-8">
-                                                <div className="bg-white rounded-xl shadow-lg p-6">
-                                                    <div className="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
-                                                        <div className="text-center">
-                                                            {useCase.icon}
-                                                            <p className="text-gray-500 mt-2">{t('product.useCases.mockup') || 'Interface adaptée'}</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <InteractiveMockup activeTab={activeTab} />
                                             </div>
                                         </div>
                                     </div>
@@ -720,22 +713,13 @@ export default function ProductPage() {
                             <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 rounded-3xl p-[2px]">
                                 <div className="bg-white rounded-3xl h-full w-full"></div>
                             </div>
-                            
-                            <div className="relative z-10">
-                                {/* Modal Header avec glassmorphism */}
+
+                            <div className="relative z-10">                                {/* Modal Header simplifié */}
                                 <div className="flex items-center justify-between p-6 bg-gradient-to-r from-blue-50/50 to-purple-50/50 backdrop-blur-sm border-b border-gray-100">
-                                    <div className="flex items-center space-x-3">
-                                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                                            <Play className="w-6 h-6 text-white ml-0.5" />
-                                        </div>
-                                        <div>
-                                            <h3 className="text-xl font-bold text-gray-900">
-                                                {t('product.demo.title') || 'Démo ChronoFlow'}
-                                            </h3>
-                                            <p className="text-sm text-gray-500">
-                                                {t('product.demo.subtitle') || 'Découvrez toutes les fonctionnalités'}
-                                            </p>
-                                        </div>
+                                    <div>
+                                        <h3 className="text-xl font-bold text-gray-900">
+                                            Démonstration
+                                        </h3>
                                     </div>
                                     <button
                                         onClick={() => setIsVideoPlaying(false)}
@@ -753,7 +737,7 @@ export default function ProductPage() {
                                     <div className="relative aspect-video bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-inner">
                                         {/* Cadre décoratif */}
                                         <div className="absolute inset-2 border border-white/10 rounded-xl pointer-events-none"></div>
-                                        
+
                                         <video
                                             className="w-full h-full object-cover rounded-2xl"
                                             controls
@@ -809,8 +793,8 @@ export default function ProductPage() {
                                                 {t('product.demo.cta') || 'Commencer gratuitement'}
                                                 <ArrowRight className="ml-2 w-4 h-4" />
                                             </ProductCTAButton>
-                                            <ProductCTAButton 
-                                                href="/contact" 
+                                            <ProductCTAButton
+                                                href="/contact"
                                                 variant="secondary"
                                                 onClick={() => setIsVideoPlaying(false)}
                                                 className="hover:bg-gray-50 transition-all duration-200"

@@ -1,5 +1,9 @@
 .footer-link {
-    @apply text-neutral-900 hover:underline transition-colors duration-150 text-sm no-underline;
+    @apply text-gray-600 hover:text-gray-800 transition-all duration-300 text-sm no-underline transform hover:scale-105;
+}
+
+.footer-link:hover {
+    transform: translateY(-1px);
 }
 
 .footer-list {
@@ -10,6 +14,30 @@
 	display: flex;
 	flex-direction: column;
 	gap: 2rem;
+}
+
+/* Effet de brillance au survol */
+.footer-link span {
+    position: relative;
+    display: inline-block;
+}
+
+.footer-link:hover span {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
 }
 
 @media (min-width: 340px) {

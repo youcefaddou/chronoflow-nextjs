@@ -90,23 +90,29 @@ export default function SignupPage() {
 			setLoading(false)
 			setError(err.message)
 		}
-	}
+	}	
 	return (
-		<div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-rose-100 to-blue-100 px-4">
+		<div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 px-4 relative overflow-hidden">
+			{/* Particules de fond animées */}
+			<div className="absolute inset-0 overflow-hidden pointer-events-none">
+				<div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-300/20 rounded-full blur-3xl animate-pulse"></div>
+				<div className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-300/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+				<div className="absolute top-1/3 left-1/3 w-64 h-64 bg-indigo-300/15 rounded-full blur-2xl animate-pulse delay-500"></div>
+			</div>
+			
 			{!i18nReady ? (
-				<div className="text-lg text-gray-600">Loading...</div>
+				<div className="text-lg text-gray-600 relative z-10">Loading...</div>
 			) : (
-			<div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
-				<h1 className="text-2xl font-bold mb-6 text-center text-rose-700">
+			<div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8 w-full max-w-md relative z-10 hover:shadow-2xl transition-all duration-300">
+				<h1 className="text-2xl font-bold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
 					{t('auth.signup.title')}
 				</h1>
 				{success && (
 					<div className="bg-green-100 text-green-700 px-3 py-2 rounded text-sm mb-4 text-center">
 						{t('auth.signup.success')}
 					</div>
-				)}
-				{error && (
-					<div className="bg-rose-100 text-rose-700 px-3 py-2 rounded text-sm mb-4">
+				)}				{error && (
+					<div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm mb-4">
 						{error}
 					</div>
 				)}
@@ -114,70 +120,65 @@ export default function SignupPage() {
 					<div>
 						<label className="block mb-1 font-medium text-gray-700" htmlFor="email">
 							{t('auth.signup.email')}
-						</label>
-						<input
+						</label>						<input
 							id="email"
 							type="email"
 							autoComplete="email"
-							className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-400 transition"
+							className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm hover:bg-white"
 							{...register('email')}
 							disabled={loading}
 						/>
 						{errors.email && (
-							<p className="text-rose-600 text-sm mt-1">{errors.email.message}</p>
+							<p className="text-red-600 text-sm mt-1">{errors.email.message}</p>
 						)}
 					</div>
 					<div>
 						<label className="block mb-1 font-medium text-gray-700" htmlFor="username">
 							{t('auth.signup.username')}
-						</label>
-						<input
+						</label>						<input
 							id="username"
 							type="text"
 							autoComplete="username"
-							className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-400 transition"
+							className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm hover:bg-white"
 							{...register('username')}
 							disabled={loading}
 						/>
 						{errors.username && (
-							<p className="text-rose-600 text-sm mt-1">{errors.username.message}</p>
+							<p className="text-red-600 text-sm mt-1">{errors.username.message}</p>
 						)}
 					</div>
 					<div>
 						<label className="block mb-1 font-medium text-gray-700" htmlFor="password">
 							{t('auth.signup.password')}
-						</label>
-						<input
+						</label>						<input
 							id="password"
 							type="password"
 							autoComplete="new-password"
-							className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-400 transition"
+							className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm hover:bg-white"
 							{...register('password')}
 							disabled={loading}
 						/>
 						{errors.password && (
-							<p className="text-rose-600 text-sm mt-1">{errors.password.message}</p>
+							<p className="text-red-600 text-sm mt-1">{errors.password.message}</p>
 						)}
 					</div>
 					<div>
 						<label className="block mb-1 font-medium text-gray-700" htmlFor="confirmPassword">
 							{t('auth.signup.confirmPassword')}
-						</label>
-						<input
+						</label>						<input
 							id="confirmPassword"
 							type="password"
 							autoComplete="new-password"
-							className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-400 transition"
+							className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-white/50 backdrop-blur-sm hover:bg-white"
 							{...register('confirmPassword')}
 							disabled={loading}
 						/>
 						{errors.confirmPassword && (
-							<p className="text-rose-600 text-sm mt-1">{errors.confirmPassword.message}</p>
+							<p className="text-red-600 text-sm mt-1">{errors.confirmPassword.message}</p>
 						)}
-					</div>
-					<button
+					</div>					<button
 						type="submit"
-						className="w-full bg-rose-600 hover:bg-rose-700 text-white font-semibold py-2 rounded-lg transition disabled:opacity-60"
+						className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 rounded-lg transition-all duration-300 disabled:opacity-60 transform hover:scale-[1.02] hover:shadow-lg"
 						disabled={loading}
 					>
 						{loading ? t('auth.signup.creating') : t('auth.signup.create')}
@@ -202,7 +203,7 @@ export default function SignupPage() {
 					</button>
 				</div>				<div className="mt-6 text-center text-sm text-gray-600">
 					{t('auth.signup.hasAccount')}{' '}
-					<Link href="/login" className="text-rose-600 hover:underline">
+					<Link href="/login" className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-medium transition-all duration-300">
 						{t('auth.signup.signIn')}
 					</Link>
 				</div>

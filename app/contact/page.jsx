@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { Mail, MessageCircle } from 'lucide-react'
 
 export default function ContactPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [contactForm, setContactForm] = useState({
     subject: '',
     message: '',
@@ -24,7 +24,6 @@ export default function ContactPage() {
       setSubmitMessageType('')
     }, 5000)
   }
-
   const handleSubmit = async (e) => {
     e.preventDefault()
     
@@ -44,22 +43,27 @@ export default function ContactPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(contactForm)
+        body: JSON.stringify({
+          ...contactForm,
+          language: i18n.language || 'fr'
+        })
       })
+
+      const responseData = await response.json()
 
       if (response.ok) {
         showMessage(
-          t('settings.items.contactSuccess') || 'Message envoyé avec succès. Nous vous répondrons dans les plus brefs délais.',
+          responseData.message || t('settings.items.contactSuccess') || 'Message envoyé avec succès. Nous vous répondrons dans les plus brefs délais.',
           'success'
         )
         setContactForm({ subject: '', message: '', email: '' })
       } else {
-        throw new Error('Failed to send message')
+        throw new Error(responseData.error || 'Failed to send message')
       }
     } catch (error) {
       console.error('Contact form error:', error)
       showMessage(
-        t('settings.items.contactError') || 'Erreur lors de l\'envoi du message. Veuillez réessayer.',
+        error.message || t('settings.items.contactError') || 'Erreur lors de l\'envoi du message. Veuillez réessayer.',
         'error'
       )
     } finally {
