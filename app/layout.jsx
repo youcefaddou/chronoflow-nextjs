@@ -13,7 +13,7 @@ export const metadata = {
 		'time tracking',
 		'freelance',
 		'PME',
-		'productivité', 
+		'productivité',
 		'chronométrage',
 		'gestion de projet',
 		'facturation',
@@ -79,9 +79,10 @@ export const metadata = {
 }
 
 export default function RootLayout({ children }) {
+
 	return (
 		<html lang="fr">
-			<body className="antialiased">
+			<body className="antialiased" suppressHydrationWarning={true}>
 				<I18nProvider>
 					<AuthProvider>
 						<div className="min-h-screen flex flex-col">

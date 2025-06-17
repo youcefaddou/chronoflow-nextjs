@@ -20,9 +20,9 @@ export default function HomePage() {
           }
         })
       },
-      { 
-        threshold: 0.1, 
-        rootMargin: '0px 0px -100px 0px' 
+      {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
       }
     )
 
@@ -56,7 +56,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-white overflow-hidden">      {/* Hero Section avec animations ultra-modernes */}
-      <section 
+      <section
         data-section="hero"
         className="relative min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center overflow-hidden intersect-fade"
       >
@@ -64,12 +64,12 @@ export default function HomePage() {
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           {/* Gradient animé */}
           <div className="absolute inset-0 animate-gradient opacity-10"></div>
-          
+
           {/* Bulles flottantes */}
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-300/20 rounded-full blur-3xl animate-float"></div>
           <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-300/20 rounded-full blur-3xl animate-float delay-1000"></div>
           <div className="absolute top-1/3 left-1/3 w-64 h-64 bg-indigo-300/15 rounded-full blur-2xl animate-float delay-500"></div>
-          
+
           {/* Particules animées */}
           <div className="absolute top-20 left-20 w-2 h-2 bg-blue-500 rounded-full animate-pulse delay-300"></div>
           <div className="absolute top-40 right-32 w-1 h-1 bg-purple-500 rounded-full animate-ping delay-700"></div>
@@ -85,7 +85,7 @@ export default function HomePage() {
                 <Zap className="w-4 h-4 mr-2 animate-pulse" />
                 {t('home.hero.badge')}
               </div>
-              
+
               {/* Titre avec effet de frappe */}
               <div className="space-y-2 animate-fade-in-up delay-200">
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
@@ -95,7 +95,7 @@ export default function HomePage() {
                   </span>
                 </h1>
               </div>
-              
+
               <p className="text-xl text-gray-600 max-w-2xl mx-auto lg:mx-0 animate-fade-in-up delay-500">
                 {t('home.hero.subtitle')}
               </p>
@@ -112,8 +112,8 @@ export default function HomePage() {
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 transform scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100"></div>
                 </Link>
-                
-                <button 
+
+                <button
                   onClick={openVideoModal}
                   className="group relative inline-flex items-center justify-center border-2 border-gray-300 hover:border-blue-600 text-gray-700 hover:text-blue-600 font-semibold px-8 py-4 rounded-lg transition-all duration-300 hover:shadow-lg backdrop-blur-sm hover-lift"
                 >
@@ -176,7 +176,7 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-              
+
               {/* Éléments flottants animés */}
               <div className="absolute -top-4 -right-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white p-3 rounded-xl shadow-lg animate-float hover-scale hover-rotate">
                 <Clock className="w-6 h-6" />
@@ -187,7 +187,7 @@ export default function HomePage() {
               <div className="absolute top-1/2 -right-8 bg-gradient-to-r from-blue-500 to-cyan-500 text-white p-2 rounded-lg shadow-lg animate-ping">
                 <div className="w-2 h-2 bg-white rounded-full"></div>
               </div>
-              
+
               {/* Notifications flottantes */}
               <div className="absolute top-16 -left-8 bg-white rounded-lg shadow-lg p-3 animate-slide-in-up delay-1000">
                 <div className="flex items-center text-sm">
@@ -206,7 +206,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>      {/* Stats Section avec compteurs animés */}
-      <section 
+      <section
         data-section="stats"
         className="py-20 bg-gradient-to-r from-gray-50 to-blue-50 intersect-fade"
       >
@@ -219,37 +219,37 @@ export default function HomePage() {
               {t('home.stats.subtitle')}
             </p>
           </div>
-          
+
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { 
-                number: t('home.stats.productivity.number'), 
-                label: t('home.stats.productivity.label'), 
-                color: 'from-blue-600 to-cyan-600', 
+              {
+                number: t('home.stats.productivity.number'),
+                label: t('home.stats.productivity.label'),
+                color: 'from-blue-600 to-cyan-600',
                 bgColor: 'bg-blue-100',
                 delay: 'delay-0',
                 icon: TrendingUp
               },
-              { 
-                number: t('home.stats.time.number'), 
-                label: t('home.stats.time.label'), 
-                color: 'from-green-600 to-emerald-600', 
+              {
+                number: t('home.stats.time.number'),
+                label: t('home.stats.time.label'),
+                color: 'from-green-600 to-emerald-600',
                 bgColor: 'bg-green-100',
                 delay: 'delay-100',
                 icon: Clock
               },
-              { 
-                number: t('home.stats.accuracy.number'), 
-                label: t('home.stats.accuracy.label'), 
-                color: 'from-purple-600 to-violet-600', 
+              {
+                number: t('home.stats.accuracy.number'),
+                label: t('home.stats.accuracy.label'),
+                color: 'from-purple-600 to-violet-600',
                 bgColor: 'bg-purple-100',
                 delay: 'delay-200',
                 icon: CheckCircle
               },
-              { 
-                number: t('home.stats.revenue.number'), 
-                label: t('home.stats.revenue.label'), 
-                color: 'from-orange-600 to-red-600', 
+              {
+                number: t('home.stats.revenue.number'),
+                label: t('home.stats.revenue.label'),
+                color: 'from-orange-600 to-red-600',
                 bgColor: 'bg-orange-100',
                 delay: 'delay-300',
                 icon: BarChart3
@@ -261,35 +261,35 @@ export default function HomePage() {
                   <div className={`w-16 h-16 mx-auto mb-4 ${stat.bgColor} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
                     <stat.icon className={`w-8 h-8 bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`} />
                   </div>
-                  
+
                   {/* Compteur animé */}
                   <div className={`text-4xl lg:text-5xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-2 group-hover:scale-105 transition-transform duration-300`}>
                     {stat.number}
                   </div>
-                  
+
                   {/* Label */}
                   <div className="text-gray-600 font-medium group-hover:text-gray-800 transition-colors duration-200">
                     {stat.label}
                   </div>
-                  
+
                   {/* Barre de progression décorative */}
                   <div className="w-full bg-gray-200 rounded-full h-1 mt-4 overflow-hidden">
-                    <div className={`h-1 bg-gradient-to-r ${stat.color} rounded-full transform origin-left transition-transform duration-1000 delay-${index * 200} group-hover:scale-x-100`} 
-                         style={{ transform: `scaleX(${0.2 + (index * 0.2)})` }}></div>
+                    <div className={`h-1 bg-gradient-to-r ${stat.color} rounded-full transform origin-left transition-transform duration-1000 delay-${index * 200} group-hover:scale-x-100`}
+                      style={{ transform: `scaleX(${0.2 + (index * 0.2)})` }}></div>
                   </div>
-                  
+
                   {/* Effet de brillance au hover */}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 transform -skew-x-12 transition-all duration-700 pointer-events-none"></div>
                 </div>
               </div>
             ))}
           </div>
-          
+
           {/* Témoignage rapide */}
           <div className="text-center mt-16 animate-fade-in-up delay-500">
             <div className="inline-flex items-center bg-white rounded-full px-6 py-3 shadow-lg hover:shadow-xl transition-shadow duration-300">
               <div className="flex -space-x-2 mr-4">
-                {[1,2,3].map((i) => (
+                {[1, 2, 3].map((i) => (
                   <div key={i} className={`w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full border-2 border-white animate-pulse delay-${i * 100}`}></div>
                 ))}
               </div>
@@ -298,7 +298,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>      {/* Features Section avec animations avancées */}
-      <section 
+      <section
         data-section="features"
         className="py-20 lg:py-32 bg-white intersect-fade"
       >
@@ -324,15 +324,15 @@ export default function HomePage() {
                   </div>
                   <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full animate-pulse"></div>
                 </div>
-                
+
                 <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors duration-300">
                   {t('home.features.timer.title')}
                 </h3>
-                
+
                 <p className="text-gray-600 mb-6 group-hover:text-gray-700 transition-colors duration-300">
                   {t('home.features.timer.description')}
                 </p>
-                
+
                 <ul className="space-y-3">
                   {[t('home.features.timer.benefit1'), t('home.features.timer.benefit2')].map((benefit, index) => (
                     <li key={index} className="flex items-center text-sm text-gray-500 group-hover:text-gray-600 transition-colors duration-300">
@@ -341,7 +341,7 @@ export default function HomePage() {
                     </li>
                   ))}
                 </ul>
-                
+
                 {/* Barre de progression simulée */}
                 <div className="mt-6 p-3 bg-gray-50 rounded-lg group-hover:bg-blue-50 transition-colors duration-300">
                   <div className="flex justify-between items-center text-sm font-mono">
@@ -365,15 +365,15 @@ export default function HomePage() {
                   </div>
                   <div className="absolute -top-2 -right-2 w-6 h-6 bg-blue-500 rounded-full animate-ping"></div>
                 </div>
-                
+
                 <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-green-600 transition-colors duration-300">
                   {t('home.features.calendar.title')}
                 </h3>
-                
+
                 <p className="text-gray-600 mb-6 group-hover:text-gray-700 transition-colors duration-300">
                   {t('home.features.calendar.description')}
                 </p>
-                
+
                 <ul className="space-y-3">
                   {[t('home.features.calendar.benefit1'), t('home.features.calendar.benefit2')].map((benefit, index) => (
                     <li key={index} className="flex items-center text-sm text-gray-500 group-hover:text-gray-600 transition-colors duration-300">
@@ -382,7 +382,7 @@ export default function HomePage() {
                     </li>
                   ))}
                 </ul>
-                
+
                 {/* Mini calendrier simulé */}
                 <div className="mt-6 p-3 bg-gray-50 rounded-lg group-hover:bg-green-50 transition-colors duration-300">
                   <div className="grid grid-cols-7 gap-1 text-xs">
@@ -390,11 +390,10 @@ export default function HomePage() {
                       <div key={index} className="text-center font-medium text-gray-400 p-1">{day}</div>
                     ))}
                     {Array.from({ length: 14 }, (_, index) => (
-                      <div key={index} className={`text-center p-1 rounded ${
-                        index === 7 ? 'bg-green-500 text-white animate-pulse' : 
-                        index === 5 || index === 12 ? 'bg-blue-100 text-blue-600' : 
-                        'text-gray-600 hover:bg-gray-100'
-                      }`}>
+                      <div key={index} className={`text-center p-1 rounded ${index === 7 ? 'bg-green-500 text-white animate-pulse' :
+                        index === 5 || index === 12 ? 'bg-blue-100 text-blue-600' :
+                          'text-gray-600 hover:bg-gray-100'
+                        }`}>
                         {index + 1}
                       </div>
                     ))}
@@ -413,15 +412,15 @@ export default function HomePage() {
                   </div>
                   <div className="absolute -top-2 -right-2 w-6 h-6 bg-orange-500 rounded-full animate-pulse"></div>
                 </div>
-                
+
                 <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-purple-600 transition-colors duration-300">
                   {t('home.features.reports.title')}
                 </h3>
-                
+
                 <p className="text-gray-600 mb-6 group-hover:text-gray-700 transition-colors duration-300">
                   {t('home.features.reports.description')}
                 </p>
-                
+
                 <ul className="space-y-3">
                   {[t('home.features.reports.benefit1'), t('home.features.reports.benefit2')].map((benefit, index) => (
                     <li key={index} className="flex items-center text-sm text-gray-500 group-hover:text-gray-600 transition-colors duration-300">
@@ -430,15 +429,15 @@ export default function HomePage() {
                     </li>
                   ))}
                 </ul>
-                
+
                 {/* Graphique simulé */}
                 <div className="mt-6 p-3 bg-gray-50 rounded-lg group-hover:bg-purple-50 transition-colors duration-300">
                   <div className="flex items-end space-x-2 h-16">
                     {[40, 60, 35, 80, 55, 90, 45].map((height, index) => (
-                      <div 
-                        key={index} 
+                      <div
+                        key={index}
                         className="bg-gradient-to-t from-purple-500 to-violet-500 rounded-t flex-1 transition-all duration-1000 hover:scale-y-125"
-                        style={{ 
+                        style={{
                           height: `${height}%`,
                           animationDelay: `${index * 100}ms`
                         }}
@@ -452,7 +451,8 @@ export default function HomePage() {
           </div>
 
           {/* Call to action au milieu */}
-          <div className="text-center mt-16 animate-fade-in-up delay-1000">            <Link 
+          <div className="text-center mt-16 animate-fade-in-up delay-1000">
+            <Link
               href="/product"
               className="inline-flex items-center bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold px-8 py-4 rounded-lg hover:shadow-2xl transition-all duration-300 hover-lift group"
             >
@@ -468,11 +468,11 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600 animate-gradient"></div>
           <div className="absolute inset-0 bg-black/20"></div>
         </div>
-        
+
         {/* Particules animées */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           {[...Array(12)].map((_, i) => (
-            <div 
+            <div
               key={i}
               className="absolute w-2 h-2 bg-white rounded-full animate-float opacity-20"
               style={{
@@ -484,7 +484,7 @@ export default function HomePage() {
             ></div>
           ))}
         </div>
-        
+
         <div className="container mx-auto px-4 lg:px-8 text-center relative z-10">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl lg:text-5xl font-bold text-white mb-6 animate-fade-in-up">
@@ -493,7 +493,7 @@ export default function HomePage() {
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto animate-fade-in-up delay-300">
               {t('home.cta.subtitle')}
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up delay-500">
               <Link
                 href="/signup"
@@ -509,7 +509,7 @@ export default function HomePage() {
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </span>
               </Link>
-              
+
               <Link
                 href="/product"
                 className="group inline-flex items-center justify-center border-2 border-white text-white hover:bg-white hover:text-blue-600 font-semibold px-8 py-4 rounded-lg transition-all duration-300 hover:shadow-lg backdrop-blur-sm hover-lift"
@@ -517,7 +517,7 @@ export default function HomePage() {
                 {t('home.cta.learn')}
               </Link>
             </div>
-              {/* Statistiques rapides */}
+            {/* Statistiques rapides */}
             <div className="grid grid-cols-3 gap-8 mt-16 animate-fade-in-up delay-700">
               <div className="text-center">
                 <div className="text-2xl font-bold text-white mb-1">{t('home.cta.stats.trial.number')}</div>
@@ -548,13 +548,13 @@ export default function HomePage() {
                 <X className="w-6 h-6" />
               </div>
             </button>
-            
+
             {/* Titre de la vidéo */}
             <div className="text-center mb-6">
               <h3 className="text-2xl font-bold text-white mb-2">{t('home.video.title')}</h3>
               <p className="text-gray-300">{t('home.video.subtitle')}</p>
             </div>
-            
+
             {/* Container vidéo avec bordure animée */}
             <div className="relative group">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl blur-sm opacity-75 group-hover:opacity-100 transition-opacity duration-300"></div>

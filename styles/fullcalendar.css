@@ -440,43 +440,49 @@
 
 /* Sidebar responsive */
 .dashboard-sidebar {
-  transition: transform 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  /* Toujours visible et relative sur toutes les tailles */
+  position: relative;
+  top: 0;
+  left: 0;
+  transform: translateX(0);
+  z-index: 50;
+  background: #1f2937;
+  color: white;
 }
 
 @media (max-width: 768px) {
   .dashboard-sidebar {
-    position: fixed;
+    /* Sur mobile, garde position relative et visible */
+    position: relative;
     top: 0;
-    left: 0;
-    height: 100vh;
-    width: 280px;
+    left: 0;    height: 100vh;
+    min-height: 100vh;
+    width: 64px; /* Largeur fixe en mode mobile (w-16) */
     z-index: 50;
-    background: white;
-    border-right: 1px solid #e5e7eb;
-    transform: translateX(-100%);
+    background: #1f2937;
+    color: white;
+    transform: translateX(0); /* Toujours visible */
+    flex-shrink: 0;
   }
-  
-  .dashboard-sidebar.open {
-    transform: translateX(0);
-  }
-  
-  .dashboard-sidebar-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 40;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease-in-out;
-  }
-  
-  .dashboard-sidebar-overlay.open {
-    opacity: 1;
-    visibility: visible;
-  }
+}
+
+.dashboard-sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 40;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease-in-out;
+}
+
+.dashboard-sidebar-overlay.open {
+  opacity: 1;
+  visibility: visible;
 }
 
 /* Masquer la barre de scroll horizontale de la sidebar */

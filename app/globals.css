@@ -441,9 +441,10 @@ body {
 
 /* ===== DASHBOARD RESPONSIVE OPTIMIZATIONS ===== */
 
-/* Prevent horizontal scroll on mobile */
+/* Dashboard container - toujours flex horizontal */
 .dashboard-container {
   display: flex;
+  flex-direction: row;
   min-height: 100vh;
   overflow-x: hidden;
   background-color: #f9fafb;
@@ -451,8 +452,9 @@ body {
 
 /* Mobile touch optimization */
 @media (max-width: 768px) {
+  /* Garde le flex row pour que la sidebar reste visible à côté */
   .dashboard-container {
-    flex-direction: column;
+    flex-direction: row;
   }
   
   /* Improve touch targets */

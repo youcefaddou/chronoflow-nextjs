@@ -8,13 +8,11 @@ import { TaskUpdateProvider, useTaskUpdate } from '../../contexts/task-update-co
 import I18nProvider from '../../components/i18n-provider'
 import { LoadingScreen } from '../../components/ui/loading-components'
 import { ErrorMessage } from '../../components/ui/error-components'
-import { useMobileMenu } from '../../hooks/use-responsive'
 import '../../styles/fullcalendar.css'
 
 function DashboardContent({ children }) {
 	const { user, loading, error } = useDashboardUser()
 	const { triggerUpdate } = useTaskUpdate()
-	const { isMenuOpen, toggleMenu, closeMenu, isMobile } = useMobileMenu()
 
 	if (loading) {
 		return <LoadingScreen message="Loading your dashboard..." />
@@ -39,24 +37,10 @@ function DashboardContent({ children }) {
 	return (
 		<div className="dashboard-container">
 			{/* Sidebar */}
-			<Sidebar 
-				isMobileOpen={isMenuOpen}
-				onMobileClose={closeMenu}
-				onMobileToggle={toggleMenu}
-				user={user}
-			/>
+			<Sidebar user={user} />
 			
-			{/* Mobile overlay */}
-			{isMenuOpen && isMobile && (
-				<div 
-					className="dashboard-sidebar-overlay open"
-					onClick={closeMenu}
-				/>
-			)}
-					{/* Main content */}
-			<main className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${
-				isMobile ? 'w-full' : ''
-			}`}>
+			{/* Main content */}
+			<main className="flex-1 flex flex-col overflow-hidden">
 				{/* Content area */}
 				<div className="flex-1 overflow-auto bg-gray-50">
 					<GlobalTimerProvider onTaskUpdate={triggerUpdate}>
