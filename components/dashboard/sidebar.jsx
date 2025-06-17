@@ -14,6 +14,7 @@ import {
 	Puzzle
 } from 'lucide-react'
 import Link from 'next/link'
+import './sidebar.css'
 
 export default function Sidebar({ user }) {
 	const { t } = useTranslation()
@@ -149,41 +150,7 @@ export default function Sidebar({ user }) {
 			style={{ touchAction: 'manipulation' }}
 		>
 			{/* Header */}
-			<div className="h-16 flex items-center justify-center overflow-hidden px-2">
-				<div className={`
-						flex items-center transition-all duration-300 ease-in-out min-w-0
-						${isIconOnly ? 'justify-center px-1' : 'justify-start'}
-					`}>
-					<Home className="w-5 h-5 text-blue-400 flex-shrink-0" />
-					<span className={`
-						 font-bold text-lg transition-all duration-300 ease-in-out
-							${isIconOnly ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'}
-							truncate
-						`}>
-						ChronoFlow
-					</span>
-				</div>
-				{/* Toggle button - visible seulement sur desktop */}
-				{!isMobile && (
-					<button
-						onClick={(e) => {
-							e.stopPropagation();
-							handleToggle();
-						}}
-						className={`
-								p-1.5 rounded-md hover:bg-gray-700 transition-all duration-300 ease-in-out flex-shrink-0
-								${isIconOnly ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100 mr-1'}
-							`}
-						aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-					>
-						{collapsed ? (
-							<ChevronRight className="w-4 h-4" />
-						) : (
-							<ChevronLeft className="w-4 h-4" />
-						)}
-					</button>
-				)}
-			</div>
+			
 			{/* User section */}
 			{user && (
 				<div className={`
@@ -206,7 +173,7 @@ export default function Sidebar({ user }) {
 								flex flex-col transition-all duration-300 ease-in-out min-w-0
 								${isIconOnly ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'}
 							`}>
-							<span className="text-sm font-medium text-white truncate">
+							<span className="text-sm font-medium p-1 text-white truncate">
 								{user.name || user.email}
 							</span>
 							{user.name && user.email && (

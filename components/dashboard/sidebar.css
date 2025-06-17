@@ -1,0 +1,112 @@
+/* Sidebar responsive */
+.dashboard-sidebar {
+  transition: all 0.3s ease-in-out;
+  /* Toujours visible et relative sur toutes les tailles */
+  position: relative;
+  top: 0;
+  left: 0;
+  transform: translateX(0);
+  z-index: 50;
+  background: #1f2937;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .dashboard-sidebar {
+    /* Sur mobile, garde position relative et visible */
+    position: relative;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    min-height: 100vh;
+    width: 64px; /* Largeur fixe en mode mobile (w-16) */
+    z-index: 50;
+    background: #1f2937;
+    color: white;
+    transform: translateX(0); /* Toujours visible */
+    flex-shrink: 0;
+  }
+}
+
+.dashboard-sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 40;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease-in-out;
+}
+
+.dashboard-sidebar-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Masquer la barre de scroll horizontale de la sidebar */
+.dashboard-sidebar {
+  overflow-x: hidden !important;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.dashboard-sidebar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Assurer que les éléments de la sidebar ne débordent pas */
+.dashboard-sidebar * {
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Prévenir le débordement horizontal */
+.sidebar-nav-item {
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+/* Texte qui peut déborder */
+.sidebar-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Contrôle strict de la largeur de la sidebar */
+.dashboard-sidebar {
+  min-width: 4rem; /* 16 en collapsed */
+  max-width: 16rem; /* 64 en expanded */
+}
+
+.dashboard-sidebar.collapsed {
+  width: 4rem !important;
+  min-width: 4rem !important;
+  max-width: 4rem !important;
+}
+
+.dashboard-sidebar.expanded {
+  width: 16rem !important;
+  max-width: 16rem !important;
+}
+
+/* Centrage parfait des icônes en mode collapsed */
+.sidebar-nav-item .group.justify-center {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding-left: 0.75rem !important;
+  padding-right: 0.75rem !important;
+}
+
+/* Espacement optimal en mode expanded */
+.sidebar-nav-item .group.justify-start {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+}
