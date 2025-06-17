@@ -75,10 +75,8 @@ export default function Sidebar({ user }) {
 		if (!isMobile) {
 			setCollapsed(!collapsed)
 		}
-	}
-	// Fonction pour gérer le clic sur la sidebar mobile
+	}	// Fonction pour gérer le clic sur la sidebar mobile
 	const handleMobileClick = (e) => {
-		console.log('handleMobileClick called:', { isMobile, mobileExpanded })
 		if (isMobile) {
 			setMobileExpanded(!mobileExpanded)
 		}
@@ -91,9 +89,7 @@ export default function Sidebar({ user }) {
 		if (isMobile) {
 			setMobileExpanded(false)
 		}
-	}
-
-	// Déterminer si la sidebar doit être en mode icône seulement
+	}	// Déterminer si la sidebar doit être en mode icône seulement
 	// Utiliser mounted pour éviter les problèmes d'hydratation
 	const isIconOnly = !mounted ? true : (isMobile ? !mobileExpanded : (collapsed && !isHovered))
 
@@ -134,24 +130,22 @@ export default function Sidebar({ user }) {
 	]
 
 	// User is passed as prop, no need to extract from session
-	return (
-		<aside
+	return (		<aside
 			className={`
 				dashboard-sidebar
+				${isIconOnly ? 'collapsed' : 'expanded'}
 				relative left-0 top-0 z-50 bg-gray-900 text-white
 				transition-all duration-300 ease-in-out
-				${isIconOnly ? 'w-16' : 'w-64'}
+				${isIconOnly ? 'w-16' : 'w-64 min-w-64'}
 				translate-x-0
 				flex flex-col
 				min-h-screen
 				overflow-x-hidden
 				max-w-64
 				flex-shrink-0				${isMobile ? 'cursor-pointer' : ''}
-			`}
-			onMouseEnter={() => !isMobile && setIsHovered(true)}
+			`}			onMouseEnter={() => !isMobile && setIsHovered(true)}
 			onMouseLeave={() => !isMobile && setIsHovered(false)}
 			onClick={handleMobileClick}
-			onTouchStart={isMobile ? handleMobileClick : undefined}
 			style={{ touchAction: 'manipulation' }}
 		>
 			{/* Header */}
