@@ -1,6 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useReducer, useEffect } from 'react'
+import { useTaskUpdate } from './task-update-context'
 
 // Actions du timer
 const TIMER_ACTIONS = {
@@ -93,6 +94,7 @@ export function useGlobalTimer() {
 // Provider du timer global
 export function GlobalTimerProvider({ children }) {
 	const [state, dispatch] = useReducer(timerReducer, initialState)
+	const taskUpdate = useTaskUpdate()
 
 	// Persister l'état dans localStorage
 	useEffect(() => {
@@ -161,13 +163,20 @@ export function GlobalTimerProvider({ children }) {
 
 	const pauseTimer = () => {
 		dispatch({ type: TIMER_ACTIONS.PAUSE })
-	}
-	const stopTimer = (shouldShowSaveModal = false) => {
+	}	const stopTimer = (shouldShowSaveModal = false) => {
 		// If shouldShowSaveModal is true, the caller will handle the save modal
 		// Otherwise, just stop the timer normally
 		if (!shouldShowSaveModal) {
 			dispatch({ type: TIMER_ACTIONS.STOP })
 		}
+		
+		// Déclencher la mise à jour des tâches après l'arrêt du timer
+		if (taskUpdate?.triggerUpdate) {
+			setTimeout(() => {
+				taskUpdate.triggerUpdate()
+			}, 100) // Petit délai pour s'assurer que la sauvegarde est terminée
+		}
+		
 		return {
 			elapsedSeconds: state.seconds,
 			hasTask: !!state.currentTask

@@ -96,17 +96,24 @@ function FAQSection () {
 							</div>
 						))}
 					</div>
-					
-					<div className="text-center mt-10">
+							<div className="text-center mt-10">
 						<p className="text-gray-600 mb-4">
 							{t('home.faq.moreQuestions')}
 						</p>
-						<Link 
-							href="/contact" 
-							className="inline-flex items-center px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white font-medium rounded-lg transition-colors duration-200"
-						>
-							{t('home.faq.contactUs')}
-						</Link>
+						<div className="flex flex-col sm:flex-row gap-4 justify-center">
+							<Link 
+								href="/faq" 
+								className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200"
+							>
+								{t('footer.faq')}
+							</Link>
+							<Link 
+								href="/contact" 
+								className="inline-flex items-center px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white font-medium rounded-lg transition-colors duration-200"
+							>
+								{t('home.faq.contactUs')}
+							</Link>
+						</div>
 					</div>
 				</div>
 			</div>

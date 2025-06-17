@@ -1,17 +1,26 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useGlobalTimer } from '../timer/global-timer-provider'
+import { useTaskUpdate } from '../../contexts/task-update-context'
 import CalendarEventTimerButton from './CalendarEventTimerButton'
 import AddTaskModal from './AddTaskModal'
 
 function TaskListView({ tasks = [], onTaskUpdate, user, lastSavedTaskId, lastSavedDuration }) {
 	const { t } = useTranslation()
 	const timer = useGlobalTimer()
+	const { refreshKey } = useTaskUpdate()
 	const [selectedTask, setSelectedTask] = useState(null)
 	const [showEditModal, setShowEditModal] = useState(false)
 	const [showAddModal, setShowAddModal] = useState(false)
+
+	// Se mettre à jour quand le refreshKey change (timer arrêté)
+	useEffect(() => {
+		if (onTaskUpdate && typeof onTaskUpdate === 'function') {
+			onTaskUpdate()
+		}
+	}, [refreshKey, onTaskUpdate])
 
 	const formatDuration = (seconds) => {
 		const minutes = Math.floor(seconds / 60)
