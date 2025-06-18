@@ -19,7 +19,7 @@ export default function Footer() {
 			<div className="max-w-7xl mx-auto px-4 py-12 flex flex-col gap-10 relative z-10">
 				<div className="flex flex-col sm:flex-row sm:gap-10 md:gap-0">
 					<div className="flex flex-col gap-3 sm:w-1/2 md:w-1/3 mb-8 sm:mb-0 items-center sm:items-start text-center sm:text-left">
-						<span className="font-bold text-3xl text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 tracking-tight hover:scale-105 transition-transform duration-300">
+						<span className="font-bold text-3xl bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 tracking-tight hover:scale-105 transition-transform duration-300">
 							ChronoFlow
 						</span>
 						<div className="flex items-center gap-2 text-gray-500 text-sm mt-2">
@@ -28,74 +28,48 @@ export default function Footer() {
 						</div>
 					</div>					<div className="flex flex-col sm:flex-row flex-1 gap-8">
 						<ul className="footer-list flex flex-col gap-3 min-w-[120px] sm:w-1/2 md:w-1/3 items-center sm:items-start text-center sm:text-left">
-							<li className="font-semibold text-gray-800 mb-2 text-base">{t('footer.product')}</li>
-							<li>
-								<Link href="/product" className="footer-link group">
-									<span className="relative">
-										{t('footer.product')}
-										<span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
-									</span>
+							<li className="font-semibold text-gray-800 mb-2 text-base">{t('footer.product')}</li>							<li>
+								<Link href="/product" className="footer-link hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 transition-all duration-300">
+									{t('footer.product')}
 								</Link>
 							</li>
 							<li>
-								<Link href="/pricing" className="footer-link group">
-									<span className="relative">
-										{t('footer.pricing')}
-										<span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
-									</span>
+								<Link href="/pricing" className="footer-link hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 transition-all duration-300">
+									{t('footer.pricing')}
 								</Link>
 							</li>
 							<li>
-								<Link href="/resources" className="footer-link group">
-									<span className="relative">
-										{t('footer.resources')}
-										<span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
-									</span>
+								<Link href="/resources" className="footer-link hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 transition-all duration-300">
+									{t('footer.resources')}
 								</Link>
 							</li>
 						</ul>
 						<ul className="footer-list flex flex-col gap-3 min-w-[120px] sm:w-1/2 md:w-1/3 items-center sm:items-start text-center sm:text-left">
-							<li className="font-semibold text-gray-800 mb-2 text-base">{t('footer.help')}</li>
+							<li className="font-semibold text-gray-800 mb-2 text-base">{t('footer.help')}</li>							
 							<li>
-								<Link href="/faq" className="footer-link group">
-									<span className="relative">
-										{t('footer.faq')}
-										<span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
-									</span>
+								<Link href="/faq" className="footer-link">
+									{t('footer.faq')}
 								</Link>
 							</li>
 							<li>
-								<Link href="/contact" className="footer-link group">
-									<span className="relative">
-										{t('footer.contact')}
-										<span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
-									</span>
+								<Link href="/contact" className="footer-link hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 transition-all duration-300">
+									{t('footer.contact')}
 								</Link>
 							</li>
-						</ul>
-						<ul className="footer-list flex flex-col gap-3 min-w-[120px] sm:w-1/2 md:w-1/3 items-center sm:items-start text-center sm:text-left">
-							<li className="font-semibold text-gray-800 mb-2 text-base">{t('footer.legal')}</li>
-							<li>
-								<Link href="/legal-notice" className="footer-link group">
-									<span className="relative">
-										{t('footer.legalNotice')}
-										<span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
-									</span>
+						</ul>						<ul className="footer-list flex flex-col gap-3 min-w-[120px] sm:w-1/2 md:w-1/3 items-center sm:items-start text-center sm:text-left">
+							<li className="font-semibold text-gray-800 mb-2 text-base">{t('footer.legal')}</li>							<li>
+								<Link href="/legal-notice" className="footer-link hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 transition-all duration-300">
+									{t('footer.legalNotice')}
 								</Link>
 							</li>
 							<li>
-								<Link href="/privacy-policy" className="footer-link group">
-									<span className="relative">
-										{t('footer.privacyPolicy')}
-										<span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
-									</span>
-								</Link>							</li>
+								<Link href="/privacy-policy" className="footer-link hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 transition-all duration-300">
+									{t('footer.privacyPolicy')}
+								</Link>
+							</li>
 							<li>
-								<Link href="/terms" className="footer-link group">
-									<span className="relative">
-										{t('footer.terms')}
-										<span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
-									</span>
+								<Link href="/terms" className="footer-link hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 transition-all duration-300">
+									{t('footer.terms')}
 								</Link>
 							</li>
 						</ul>
@@ -115,7 +89,7 @@ export default function Footer() {
 						<div className="hidden sm:block w-px h-4 bg-gray-300"></div>
 						<div className="flex items-center gap-2">
 							<div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-							<span>99.9% de disponibilité</span>
+							<span>99.8% de disponibilité</span>
 						</div>
 						<div className="hidden sm:block w-px h-4 bg-gray-300"></div>
 						<div className="flex items-center gap-2">
