@@ -16,14 +16,22 @@ const userSchema = new mongoose.Schema({
 		scope: { type: String },
 		token_type: { type: String },
 		expiry_date: { type: Number },
-	},
-	googleCalendar: {
+	},	googleCalendar: {
 		connected: { type: Boolean, default: false },
 		accessToken: { type: String },
 		refreshToken: { type: String },
 		email: { type: String },
 		connectedAt: { type: Date }
 	},
+	subscription: {
+		plan: { type: String, default: 'free' }, // 'free', 'pro', 'business'
+		status: { type: String, default: 'inactive' }, // 'active', 'inactive', 'canceled'
+		stripeCustomerId: { type: String },
+		stripeSubscriptionId: { type: String },
+		currentPeriodStart: { type: Date },
+		currentPeriodEnd: { type: Date },
+		updatedAt: { type: Date, default: Date.now }
+	}
 })
 
 export default mongoose.models.User || mongoose.model('User', userSchema)

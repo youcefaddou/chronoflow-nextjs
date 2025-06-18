@@ -32,7 +32,7 @@ export default function PricingPage() {
   const getDefaultFeatures = (planId) => {
     const defaultFeatures = {
       free: [
-        "Suivi du temps jusqu'à 3 projets",
+        "Suivi du temps jusqu'à 5 tâches",
         "Chronomètre de base", 
         "Statistiques simples (journalières/hebdomadaires)",
         "Exportation CSV limitée (1x/mois)",
@@ -40,12 +40,11 @@ export default function PricingPage() {
         "Historique de 30 jours"
       ],
       pro: [
-        "Projets illimités",
-        "Intégration Google Calendar + Outlook",
+        "Tâches illimitées",
+        "Intégration Google Calendar",
         "Rapports détaillés et personnalisés",
-        "Exportation multi-formats (PDF, CSV, JSON)",
+        "Exportation multi-formats (PDF, CSV)",
         "Historique complet",
-        "Facturation automatique par projet",
         "Support email prioritaire",
         "Sauvegarde automatique"
       ],
@@ -69,7 +68,8 @@ export default function PricingPage() {
       name: t('pricing.free.title'),
       description: t('pricing.free.description'),
       price: t('pricing.free.price'),
-      yearlyPrice: t('pricing.free.price'),      features: getFeatures('free', 6),
+      yearlyPrice: t('pricing.free.price'),      
+      features: getFeatures('free', 6),
       cta: t('pricing.getStarted'),
       popular: false,
       comingSoon: false,
@@ -80,7 +80,8 @@ export default function PricingPage() {
       name: t('pricing.pro.title'),
       description: t('pricing.pro.description'),
       price: t('pricing.pro.monthlyPrice'),
-      yearlyPrice: t('pricing.pro.yearlyPrice'),      features: getFeatures('pro', 8),
+      yearlyPrice: t('pricing.pro.yearlyPrice'),      
+      features: getFeatures('pro', 8),
       cta: t('pricing.upgrade'),
       popular: true,
       comingSoon: false,
@@ -91,7 +92,8 @@ export default function PricingPage() {
       name: t('pricing.business.title'),
       description: t('pricing.business.description'),
       price: t('pricing.business.monthlyPrice'),
-      yearlyPrice: t('pricing.business.yearlyPrice'),      features: getFeatures('business', 8),
+      yearlyPrice: t('pricing.business.yearlyPrice'),      
+      features: getFeatures('business', 8),
       cta: t('pricing.contactUs'),
       popular: false,
       comingSoon: true,
