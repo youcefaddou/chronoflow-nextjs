@@ -37,9 +37,8 @@ export default function SaveTimerModal({
 			}
 			
 			await onSave(taskData)
-			onClose()
-		} catch (error) {
-			console.error('Erreur lors de la sauvegarde:', error)
+			onClose()		} catch (error) {
+			// Silent error handling for production
 		} finally {
 			setSaving(false)
 		}

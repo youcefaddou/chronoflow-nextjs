@@ -112,9 +112,8 @@ export default function GlobalTimerProvider({ children, onTaskUpdate }) {
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify({ eventId, durationSeconds: total }),
 					})
-					
-					if (!response.ok) {
-						console.error('Failed to save Google event timer:', await response.text())
+							if (!response.ok) {
+						// Silent error handling for production
 					}
 					
 					if (typeof onSave === 'function') onSave(eventId, total)
@@ -124,9 +123,8 @@ export default function GlobalTimerProvider({ children, onTaskUpdate }) {
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify({ durationSeconds: total }),
 					})
-					
-					if (!response.ok) {
-						console.error('Failed to save task timer:', await response.text())
+							if (!response.ok) {
+						// Silent error handling for production
 					}
 					
 					if (typeof onSave === 'function') onSave(taskId, total)
@@ -147,14 +145,13 @@ export default function GlobalTimerProvider({ children, onTaskUpdate }) {
 					duration: total,
 					task
 				})
-				
-			} catch (err) {
-				console.error('GlobalTimerProvider.stop: Failed to save timer', err)
+						} catch (err) {
+				// Silent error handling for production
 				// Même en cas d'erreur, émettre les événements pour la cohérence UI
 				emitTaskUpdate(taskId, total)
 			}
 		} else {
-			console.warn('GlobalTimerProvider.stop: No valid task id or _id, skipping save', task)
+			// Silent warning: No valid task id or _id, skipping save
 		}
 		
 		// Réinitialiser l'état du timer

@@ -22,9 +22,8 @@ export default function FocusZoneModal({ onClose, onTaskSelect, user }) {
 				if (res.ok) {
 					const data = await res.json()
 					setTasks(data.filter(task => !task.is_finished))
-				}
-			} catch (error) {
-				console.error('Erreur lors du chargement des tâches:', error)
+				}			} catch (error) {
+				// Silent error handling for production
 			} finally {
 				setLoading(false)
 			}
@@ -63,9 +62,8 @@ export default function FocusZoneModal({ onClose, onTaskSelect, user }) {
 				setNewTaskTitle('')
 				setShowCreateForm(false)
 				onTaskSelect(newTask)
-			}
-		} catch (error) {
-			console.error('Erreur lors de la création de la tâche:', error)
+			}		} catch (error) {
+			// Silent error handling for production
 		}
 	}
 

@@ -40,26 +40,20 @@ export function useCalendarSync(events = [], onEventsUpdate = null) {
 	useTaskSynchronization({
 		onTaskUpdate: useCallback((taskId, duration) => {
 			updateEvent(taskId, { durationSeconds: duration })
-		}, [updateEvent]),
-
-		onTimerStart: useCallback((taskId) => {
-            console.error('[CalendarSync] Timer started for event:', taskId)
+		}, [updateEvent]),		onTimerStart: useCallback(() => {
 			// Peut être utilisé pour mettre à jour l'état visuel
 			forceRefresh()
 		}, [forceRefresh]),
 
 		onTimerStop: useCallback((taskId, duration) => {
-			console.error('[CalendarSync] Timer stopped for event:', taskId, duration)
 			updateEvent(taskId, { durationSeconds: duration })
 		}, [updateEvent]),
 
-		onTimerPause: useCallback((taskId) => {
-			console.error('[CalendarSync] Timer paused for event:', taskId)
+		onTimerPause: useCallback(() => {
 			forceRefresh()
 		}, [forceRefresh]),
 
-		onTimerResume: useCallback((taskId) => {
-			console.error('[CalendarSync] Timer resumed for event:', taskId)
+		onTimerResume: useCallback(() => {
 			forceRefresh()
 		}, [forceRefresh])
 	})
@@ -104,16 +98,13 @@ export function useTaskListSync(tasks = [], onTasksUpdate = null) {
 			
 			return newTasks
 		})
-	}, [onTasksUpdate])
-	// Écouter les événements de synchronisation
+	}, [onTasksUpdate])	// Écouter les événements de synchronisation
 	useTaskSynchronization({
 		onTaskUpdate: useCallback((taskId, duration) => {
-			console.error('[TaskListSync] Updating task duration:', taskId, duration)
 			updateTask(taskId, { durationSeconds: duration })
 		}, [updateTask]),
 
 		onTimerStop: useCallback((taskId, duration) => {
-			console.error('[TaskListSync] Timer stopped for task:', taskId, duration)
 			updateTask(taskId, { durationSeconds: duration })
 		}, [updateTask])
 	})

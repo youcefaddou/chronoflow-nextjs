@@ -104,7 +104,7 @@ function TaskListView({ tasks = [], onTaskUpdate, user, lastSavedTaskId, lastSav
 				})
 						if (!res.ok) {
 					const text = await res.text()
-					console.error('Erreur lors de la complétion Google:', text)
+					// Silent error handling for production
 					setErrorMessage(lang === 'fr' ? '❌ Erreur lors de la complétion Google' : '❌ Error finishing Google event')
 					setTimeout(() => setErrorMessage(''), 3000)
 					return
@@ -114,7 +114,7 @@ function TaskListView({ tasks = [], onTaskUpdate, user, lastSavedTaskId, lastSav
 				onTaskUpdate && onTaskUpdate()
 				return
 			} catch (err) {
-				console.error('Erreur lors de la complétion Google:', err)
+				// Silent error handling for production
 				setErrorMessage(lang === 'fr' ? '❌ Erreur lors de la complétion Google' : '❌ Error finishing Google event')
 				setTimeout(() => setErrorMessage(''), 3000)
 				return
@@ -133,11 +133,11 @@ function TaskListView({ tasks = [], onTaskUpdate, user, lastSavedTaskId, lastSav
 			
 			if (!res.ok) {
 				const text = await res.text()
-				console.error('Erreur lors de la mise à jour:', text)
+				// Silent error handling for production
 			}
 			onTaskUpdate && onTaskUpdate()
 		} catch (err) {
-			console.error('Erreur lors de la mise à jour:', err)
+			// Silent error handling for production
 		}
 	}
 
@@ -156,7 +156,7 @@ function TaskListView({ tasks = [], onTaskUpdate, user, lastSavedTaskId, lastSav
 	const handleEditSave = async (updatedTask) => {
 		const id = editTask?.id || editTask?._id
 		if (!id) {
-			console.error('handleEditSave: missing task id')
+			// Silent error handling for production
 			setEditTask(null)
 			return
 		}
@@ -180,7 +180,7 @@ function TaskListView({ tasks = [], onTaskUpdate, user, lastSavedTaskId, lastSav
 				onTaskUpdate && onTaskUpdate()
 				return
 			} catch (err) {
-				console.error('Erreur lors de l\'édition Google:', err)
+				// Silent error handling for production
 				setEditTask(null)
 				return
 			}
@@ -201,7 +201,7 @@ function TaskListView({ tasks = [], onTaskUpdate, user, lastSavedTaskId, lastSav
 			setEditTask(null)
 			if (onTaskUpdate) onTaskUpdate()
 		} catch (err) {
-			console.error('Erreur lors de la modification:', err)
+			// Silent error handling for production
 			setEditTask(null)
 		}
 	}
@@ -226,7 +226,7 @@ function TaskListView({ tasks = [], onTaskUpdate, user, lastSavedTaskId, lastSav
 			})		
 			if (!res.ok) {
 				const text = await res.text()
-				console.error('handleAddTaskSave: Error response', text)
+				// Silent error handling for production
 				alert(lang === 'fr'
 					? `Erreur lors de l'ajout de la tâche: ${text.slice(0, 200)}`
 					: `Error adding task: ${text.slice(0, 200)}`)
@@ -237,7 +237,7 @@ function TaskListView({ tasks = [], onTaskUpdate, user, lastSavedTaskId, lastSav
 			onTaskUpdate && onTaskUpdate()
 			setShowAddTaskModal(false)
 		} catch (err) {
-			console.error('handleAddTaskSave: Exception', err)
+			// Silent error handling for production
 			alert(lang === 'fr'
 				? `Erreur lors de l'ajout de la tâche: ${err.message}`
 				: `Error adding task: ${err.message}`)
@@ -410,7 +410,7 @@ function TaskListView({ tasks = [], onTaskUpdate, user, lastSavedTaskId, lastSav
 								onTaskUpdate && onTaskUpdate()
 								return
 							} catch (err) {
-								console.error('Erreur lors de la suppression Google:', err)
+								// Silent error handling for production
 								setEditTask(null)
 								return
 							}
@@ -422,10 +422,10 @@ function TaskListView({ tasks = [], onTaskUpdate, user, lastSavedTaskId, lastSav
 							})
 							if (!res.ok) {
 								const text = await res.text()
-								console.error('Erreur lors de la suppression:', text)
+								// Silent error handling for production
 							}
 						} catch (err) {
-							console.error('Erreur lors de la suppression:', err)
+							// Silent error handling for production
 						}
 						setEditTask(null)
 						if (onTaskUpdate) onTaskUpdate()
