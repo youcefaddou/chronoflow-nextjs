@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useGlobalTimer } from '../timer/global-timer-provider'
 import { useTaskUpdate } from '../../contexts/task-update-context'
+import { useTaskListSync } from '../../hooks/use-calendar-sync'
 import CalendarEventTimerButton from './CalendarEventTimerButton'
 import AddTaskModal from './AddTaskModal'
 
@@ -14,6 +15,9 @@ function TaskListView({ tasks = [], onTaskUpdate, user, lastSavedTaskId, lastSav
 	const [selectedTask, setSelectedTask] = useState(null)
 	const [showEditModal, setShowEditModal] = useState(false)
 	const [showAddModal, setShowAddModal] = useState(false)
+
+	// Utiliser la synchronisation des tâches
+	const { tasks: syncedTasks } = useTaskListSync(tasks)
 
 	// Se mettre à jour quand le refreshKey change (timer arrêté)
 	useEffect(() => {
@@ -213,7 +217,7 @@ function TaskListView({ tasks = [], onTaskUpdate, user, lastSavedTaskId, lastSav
 			)}
 
 			<div className='space-y-3'>
-				{tasks.length === 0 ? (
+				{syncedTasks.length === 0 ? (
 					<div className='text-center py-12'>
 						<div className='text-gray-400 text-lg mb-2'>📝</div>
 						<p className='text-gray-600'>{t('tasks.noTasks') || 'No tasks found'}</p>
@@ -222,7 +226,7 @@ function TaskListView({ tasks = [], onTaskUpdate, user, lastSavedTaskId, lastSav
 						</p>
 					</div>
 				) : (
-					tasks.map(task => (
+					syncedTasks.map(task => (
 						<div
 							key={task.id}
 							className={`bg-white border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${

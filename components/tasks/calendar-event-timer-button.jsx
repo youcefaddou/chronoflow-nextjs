@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { emitTaskUpdate } from '../../hooks/use-task-synchronization'
 
 function CalendarEventTimerButton({ event, timer, lang, disabled, onTaskUpdate }) {
 	const [saving, setSaving] = useState(false)
@@ -33,7 +34,6 @@ function CalendarEventTimerButton({ event, timer, lang, disabled, onTaskUpdate }
 			}
 		}
 	}
-
 	const handleStop = async e => {
 		e.stopPropagation()
 		e.preventDefault()
@@ -55,7 +55,9 @@ function CalendarEventTimerButton({ event, timer, lang, disabled, onTaskUpdate }
 				setSaving(false)
 				if (onTaskUpdate) onTaskUpdate(event.id, newDuration)
 				return
-			}			if (isGoogleEvent) {
+			}
+			
+			if (isGoogleEvent) {
 				// Toujours retirer le préfixe gcal- pour la DB/API
 				const eventId = String(event.id).replace(/^gcal-/, '')
 				const res = await fetch('/api/integrations/google-calendar/event-times', {
@@ -63,10 +65,13 @@ function CalendarEventTimerButton({ event, timer, lang, disabled, onTaskUpdate }
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ eventId, durationSeconds: newDuration }),
 				})
-						if (!res.ok) {
+				
+				if (!res.ok) {
 					const text = await res.text()
 					console.error('Erreur lors de la mise à jour du timer Google:', text)
-					setSaving(false)
+					setSaving(false)					// Émettre l'événement même en cas d'erreur pour la cohérence UI
+					const eventId = String(event.id).replace(/^gcal-/, '')
+					emitTaskUpdate(eventId, newDuration)
 					if (onTaskUpdate) onTaskUpdate(event.id, newDuration)
 					return
 				}
@@ -84,7 +89,8 @@ function CalendarEventTimerButton({ event, timer, lang, disabled, onTaskUpdate }
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ durationSeconds: newDuration }),
 				})
-						if (!res.ok) {
+				
+				if (!res.ok) {
 					const text = await res.text()
 					console.error('Erreur lors de la mise à jour du timer:', text)
 					// Pas d'alert(), juste log l'erreur
@@ -97,6 +103,10 @@ function CalendarEventTimerButton({ event, timer, lang, disabled, onTaskUpdate }
 			if (typeof timer.stop === 'function') {
 				timer.stop()
 			}
+					// Émettre un événement pour synchroniser toutes les vues
+			const eventId = isGoogleEvent ? String(event.id).replace(/^gcal-/, '') : (event.id || event._id)
+			emitTaskUpdate(eventId, newDuration)
+			
 			setSaving(false)
 			if (onTaskUpdate) onTaskUpdate(event.id, newDuration)
 		} catch (err) {

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Sidebar from '../../components/dashboard/sidebar'
 import GlobalTimerProvider from '../../components/timer/global-timer-provider'
+import TimerSyncManager from '../../components/timer/timer-sync-manager'
 import { DashboardUserProvider, useDashboardUser } from '../../contexts/dashboard-user-context'
 import { TaskUpdateProvider, useTaskUpdate } from '../../contexts/task-update-context'
 import I18nProvider from '../../components/i18n-provider'
@@ -33,9 +34,14 @@ function DashboardContent({ children }) {
 
 	if (!user) {
 		return <LoadingScreen message="Redirecting to login..." />
-	}	
-	return (
+	}		return (
 		<div className="dashboard-container">
+			{/* Gestionnaire de synchronisation des timers */}
+			<TimerSyncManager 
+				onTaskUpdate={triggerUpdate}
+				onForceRefresh={triggerUpdate}
+			/>
+			
 			{/* Sidebar */}
 			<Sidebar user={user} />
 			
@@ -43,9 +49,7 @@ function DashboardContent({ children }) {
 			<main className="flex-1 flex flex-col overflow-hidden">
 				{/* Content area */}
 				<div className="flex-1 overflow-auto bg-gray-50">
-					<GlobalTimerProvider onTaskUpdate={triggerUpdate}>
-						{children}
-					</GlobalTimerProvider>
+					{children}
 				</div>
 			</main>
 		</div>
@@ -56,13 +60,13 @@ export default function DashboardLayout({ children }) {
 	return (
 		<I18nProvider>
 			<TaskUpdateProvider>
-				<GlobalTimerProvider>
-					<DashboardUserProvider>
+				<DashboardUserProvider>
+					<GlobalTimerProvider>
 						<DashboardContent>
 							{children}
 						</DashboardContent>
-					</DashboardUserProvider>
-				</GlobalTimerProvider>
+					</GlobalTimerProvider>
+				</DashboardUserProvider>
 			</TaskUpdateProvider>
 		</I18nProvider>
 	)

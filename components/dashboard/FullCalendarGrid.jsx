@@ -9,6 +9,7 @@ import listPlugin from '@fullcalendar/list'
 
 import { useTranslation } from 'react-i18next'
 import { useGlobalTimer } from '../timer/global-timer-provider'
+import { useCalendarSync } from '../../hooks/use-calendar-sync'
 import AddTaskModal from './AddTaskModal'
 import CalendarEventTimerButton from './CalendarEventTimerButton'
 import TaskListView from './TaskListView'
@@ -25,6 +26,9 @@ function FullCalendarGrid({ user, refreshKey, lastSavedTaskId, lastSavedDuration
 	const timer = useGlobalTimer()
 
 	const { events: mergedEvents, loading: eventsLoading, error: eventsError, refetch: refetchEvents } = useMergedEvents(user, refreshKey)
+	
+	// Utiliser la synchronisation du calendrier
+	const { events: syncedEvents, refreshKey: syncRefreshKey } = useCalendarSync(mergedEvents)
 
 	// Error messages with i18n
 	const getErrorMessage = useCallback((key) => {
@@ -356,7 +360,7 @@ function FullCalendarGrid({ user, refreshKey, lastSavedTaskId, lastSavedDuration
 					}}
 					locale='en'
 					buttonText={calendarButtonText}
-					events={mergedEvents.map(e => e.isGoogle ? mapGoogleEventForCalendar(e) : mapTaskForCalendar(e))}
+					events={syncedEvents.map(e => e.isGoogle ? mapGoogleEventForCalendar(e) : mapTaskForCalendar(e))}
 					selectable
 					editable
 					select={handleDateSelect}
@@ -368,9 +372,9 @@ function FullCalendarGrid({ user, refreshKey, lastSavedTaskId, lastSavedDuration
 					eventContent={arg => {
 						const eventProps = arg.event.extendedProps || {}
 						const eventId = String(arg.event.id)
-						const mergedEventObj = mergedEvents.find(e => String(e.id) === eventId) || eventProps
+						const syncedEventObj = syncedEvents.find(e => String(e.id) === eventId) || eventProps
 						const eventForTimer = {
-							...mergedEventObj,
+							...syncedEventObj,
 							id: eventId,
 							title: arg.event.title,
 							durationSeconds: typeof eventProps.durationSeconds === 'number' ? eventProps.durationSeconds : 0,
@@ -447,9 +451,8 @@ function FullCalendarGrid({ user, refreshKey, lastSavedTaskId, lastSavedDuration
 						)
 					}}
 				/>
-			) : (
-				<TaskListView
-					tasks={mergedEvents}
+			) : (				<TaskListView
+					tasks={syncedEvents}
 					onTaskUpdate={refetchEvents}
 					user={user}
 					lastSavedTaskId={lastSavedTaskId}

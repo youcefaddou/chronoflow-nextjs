@@ -325,6 +325,25 @@ function FullCalendarGrid({ user, refreshKey, lastSavedTaskId, lastSavedDuration
 		}
 	}
 
+	// Écouter les événements de mise à jour des tâches pour synchronisation
+	useEffect(() => {
+		const handleTaskUpdate = (event) => {
+			const { taskId, duration } = event.detail || {}
+			if (taskId) {
+				// Actualiser les événements pour refléter la nouvelle durée
+				refetchEvents()
+				if (onRefresh) {
+					onRefresh()
+				}
+			}
+		}
+
+		if (typeof window !== 'undefined') {
+			window.addEventListener('taskUpdated', handleTaskUpdate)
+			return () => window.removeEventListener('taskUpdated', handleTaskUpdate)
+		}
+	}, [refetchEvents, onRefresh])
+
 	if (eventsLoading) {
 		return (
 			<div className='bg-white rounded-xl shadow p-4'>

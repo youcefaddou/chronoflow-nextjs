@@ -1,6 +1,14 @@
 'use client'
 
 import React, { createContext, useContext, useState, useRef, useEffect, useCallback } from 'react'
+import { 
+	emitTaskUpdate, 
+	emitTimerStart, 
+	emitTimerStop, 
+	emitTimerPause, 
+	emitTimerResume,
+	emitTimerSync 
+} from '../../hooks/use-task-synchronization'
 
 const GlobalTimerContext = createContext()
 
@@ -41,15 +49,19 @@ export default function GlobalTimerProvider({ children, onTaskUpdate }) {
 			}
 		}
 	}, [running, paused])
-
 	const start = (newTask = null, initialSeconds = 0) => {
 		setTask(newTask)
 		setAccumulated(initialSeconds)
 		setRunning(true)
 		setPaused(false)
 		setStartTimestamp(Date.now())
+		
+		// Émettre l'événement de démarrage du timer
+		const taskId = newTask?.id || newTask?._id
+		if (taskId) {
+			emitTimerStart(taskId, newTask)
+		}
 	}
-
 	const pause = () => {
 		if (running && !paused && startTimestamp) {
 			const elapsed = Math.floor((Date.now() - startTimestamp) / 1000)
@@ -57,15 +69,25 @@ export default function GlobalTimerProvider({ children, onTaskUpdate }) {
 			setStartTimestamp(null)
 		}
 		setPaused(true)
+		
+		// Émettre l'événement de pause du timer
+		const taskId = task?.id || task?._id
+		if (taskId) {
+			emitTimerPause(taskId, task)
+		}
 	}
-
 	const resume = () => {
 		if (running && paused) {
 			setStartTimestamp(Date.now())
 			setPaused(false)
+			
+			// Émettre l'événement de reprise du timer
+			const taskId = task?.id || task?._id
+			if (taskId) {
+				emitTimerResume(taskId, task)
+			}
 		}
 	}
-
 	const stop = useCallback(async () => {
 		let total = accumulated
 		if (running && startTimestamp) {
@@ -74,51 +96,81 @@ export default function GlobalTimerProvider({ children, onTaskUpdate }) {
 		}
 		
 		const taskId = task?.id || task?._id
+		
+		// D'abord émettre l'événement d'arrêt pour synchroniser l'UI
+		if (taskId) {
+			emitTimerStop(taskId, total, task)
+		}
+		
 		if (task && taskId) {
 			const isGoogleEvent = !!task.isGoogle || String(taskId).startsWith('gcal-')
-			try {				if (isGoogleEvent) {
+			try {				
+				if (isGoogleEvent) {
 					const eventId = String(taskId).replace(/^gcal-/, '')
-					await fetch('/api/integrations/google-calendar/event-times', {
+					const response = await fetch('/api/integrations/google-calendar/event-times', {
 						method: 'POST',
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify({ eventId, durationSeconds: total }),
 					})
+					
+					if (!response.ok) {
+						console.error('Failed to save Google event timer:', await response.text())
+					}
+					
 					if (typeof onSave === 'function') onSave(eventId, total)
 				} else {
-					await fetch(`/api/tasks/${taskId}`, {
+					const response = await fetch(`/api/tasks/${taskId}`, {
 						method: 'PUT',
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify({ durationSeconds: total }),
 					})
+					
+					if (!response.ok) {
+						console.error('Failed to save task timer:', await response.text())
+					}
+					
 					if (typeof onSave === 'function') onSave(taskId, total)
 				}
-						// Notifier le dashboard que les tâches doivent être rafraîchies
+				
+				// Émettre l'événement de mise à jour de tâche après sauvegarde réussie
+				emitTaskUpdate(taskId, total)
+				
+				// Notifier le dashboard que les tâches doivent être rafraîchies
 				if (typeof onTaskUpdate === 'function') {
 					onTaskUpdate()
 				}
 				
-				// Émettre un événement personnalisé pour les autres composants
-				if (typeof window !== 'undefined') {
-					window.dispatchEvent(new CustomEvent('taskUpdated', { 
-						detail: { taskId, duration: total } 
-					}))
-				}
+				// Synchroniser toutes les vues
+				emitTimerSync({
+					action: 'stop',
+					taskId,
+					duration: total,
+					task
+				})
+				
 			} catch (err) {
 				console.error('GlobalTimerProvider.stop: Failed to save timer', err)
+				// Même en cas d'erreur, émettre les événements pour la cohérence UI
+				emitTaskUpdate(taskId, total)
 			}
 		} else {
 			console.warn('GlobalTimerProvider.stop: No valid task id or _id, skipping save', task)
 		}
 		
+		// Réinitialiser l'état du timer
 		setRunning(false)
 		setPaused(false)
 		setStartTimestamp(null)
 		setTask(null)
 		setAccumulated(0)
 	}, [accumulated, running, startTimestamp, task, onSave, onTaskUpdate])
-
 	const setTime = s => setAccumulated(s)
 	const setOnSaveCallback = cb => setOnSave(() => cb)
+	
+	// Méthode pour démarrer depuis une durée existante (utile pour les tâches qui ont déjà du temps)
+	const startFrom = (initialSeconds, newTask) => {
+		start(newTask, initialSeconds)
+	}
 
 	const getElapsedSeconds = () => {
 		if (!running) return 0
@@ -133,6 +185,7 @@ export default function GlobalTimerProvider({ children, onTaskUpdate }) {
 				paused,
 				task,
 				start,
+				startFrom,
 				pause,
 				resume,
 				stop,

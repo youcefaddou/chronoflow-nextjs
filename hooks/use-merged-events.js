@@ -9,6 +9,38 @@ export function useMergedEvents() {
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState(null)
 
+	// Fonction pour mettre à jour un événement localement sans refetch complet
+	const updateEventLocally = useCallback((taskId, newDuration) => {
+		setEvents(prevEvents => 
+			prevEvents.map(event => {
+				// Vérifier si c'est l'événement à mettre à jour
+				const isMatch = String(event.id) === String(taskId) || 
+					String(event.id).replace(/^gcal-/, '') === String(taskId) ||
+					String(event.eventId) === String(taskId)
+				
+				if (isMatch) {
+					return { ...event, durationSeconds: newDuration }
+				}
+				return event
+			})
+		)
+	}, [])
+
+	// Écouter les événements de synchronisation
+	useEffect(() => {
+		const handleTaskUpdate = (event) => {
+			const { taskId, duration } = event.detail || {}
+			if (taskId && typeof duration === 'number') {
+				updateEventLocally(taskId, duration)
+			}
+		}
+
+		if (typeof window !== 'undefined') {
+			window.addEventListener('taskUpdated', handleTaskUpdate)
+			return () => window.removeEventListener('taskUpdated', handleTaskUpdate)
+		}
+	}, [updateEventLocally])
+
 	const fetchMergedEvents = useCallback(async () => {
 		setLoading(true)
 		setError(null)

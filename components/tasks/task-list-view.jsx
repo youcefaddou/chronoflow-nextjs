@@ -3,6 +3,7 @@
 import React, { useMemo, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useGlobalTimer } from '../timer/global-timer-provider'
+import { useTaskSynchronization } from '../../hooks/use-task-synchronization'
 import CalendarEventTimerButton from './calendar-event-timer-button'
 import AddTaskModal from '../dashboard/AddTaskModal'
 
@@ -43,7 +44,6 @@ function TaskListView({ tasks = [], onTaskUpdate, user, lastSavedTaskId, lastSav
 	const [taskList, setTaskList] = useState(tasks.map(mapTaskFromApi))
 	const [statusMessage, setStatusMessage] = useState('')
 	const [errorMessage, setErrorMessage] = useState('')
-
 	// Keep local taskList in sync with tasks prop
 	useEffect(() => {
 		setTaskList(tasks.map(mapTaskFromApi))
@@ -54,6 +54,32 @@ function TaskListView({ tasks = [], onTaskUpdate, user, lastSavedTaskId, lastSav
 		const interval = setInterval(() => setTick(t => t + 1), 1000)
 		return () => clearInterval(interval)
 	}, [timer.running])
+
+	// Écouter les événements de mise à jour des tâches pour synchronisation
+	useEffect(() => {
+		const handleTaskUpdate = (event) => {
+			const { taskId, duration } = event.detail || {}
+			if (taskId) {
+				// Mettre à jour la durée locale de la tâche
+				setTaskList(prevTasks => 
+					prevTasks.map(task => 
+						String(task.id) === String(taskId) || String(task.id).replace(/^gcal-/, '') === String(taskId)
+							? { ...task, durationSeconds: duration }
+							: task
+					)
+				)
+				// Déclencher un refresh global
+				if (onTaskUpdate) {
+					onTaskUpdate()
+				}
+			}
+		}
+
+		if (typeof window !== 'undefined') {
+			window.addEventListener('taskUpdated', handleTaskUpdate)
+			return () => window.removeEventListener('taskUpdated', handleTaskUpdate)
+		}
+	}, [onTaskUpdate])
 
 	// handleFinish (marquer comme terminé)
 	const handleFinish = async (task) => {

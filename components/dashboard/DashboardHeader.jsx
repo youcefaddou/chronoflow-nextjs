@@ -55,44 +55,20 @@ function DashboardHeader({ user, sidebarCollapsed, setSidebarCollapsed }) {
 			timer.pause()
 		}
 	}
-
 	const handleStop = async () => {
-		if ((timer.running || safeSeconds > 0) && timer.task && timer.task.id) {
-			const isGoogleEvent = !!timer.task.isGoogle || String(timer.task.id).startsWith('gcal-')
-			const taskId = timer.task.id
-			try {
-				if (isGoogleEvent) {
-					// For Google events, POST to the Google Calendar event-times endpoint
-					const eventId = String(taskId).replace(/^gcal-/, '')
-					await fetch('/api/integrations/google-calendar/event-times', {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						credentials: 'include',
-						body: JSON.stringify({ eventId, durationSeconds: safeSeconds }),
-					})
-				} else {
-					// Local task: update via /api/tasks/:id
-					await fetch(`/api/tasks/${taskId}`, {
-						method: 'PUT',
-						headers: { 'Content-Type': 'application/json' },
-						credentials: 'include',
-						body: JSON.stringify({
-							durationSeconds: safeSeconds,
-						}),
-					})
-				}
-			} catch (err) {
-				console.error('Error saving time:', err)
-			}
-			timer.stop()
+		const safeSeconds = timer.getElapsedSeconds ? timer.getElapsedSeconds() : seconds
+		
+		if ((timer.running || safeSeconds > 0) && timer.task && (timer.task.id || timer.task._id)) {
+			// Timer avec tâche - utiliser le système centralisé
+			await timer.stop()
 			setSeconds(0)
 			setRefreshKey(k => k + 1)
 		} else if (timer.running || safeSeconds > 0) {
-			// Timer WITHOUT task → open creation modal
+			// Timer sans tâche - ouvrir la modale de sauvegarde
 			setElapsedSecondsToSave(safeSeconds)
 			setShowSaveTimer(true)
 		} else {
-			// Safety: if timer already stopped
+			// Timer déjà arrêté
 			timer.stop()
 			setSeconds(0)
 		}
