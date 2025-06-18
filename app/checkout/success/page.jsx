@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
-export default function CheckoutSuccessPage() {
+function CheckoutSuccessContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [verificationState, setVerificationState] = useState('loading')
@@ -135,9 +135,7 @@ export default function CheckoutSuccessPage() {
           >
             Gérer mon abonnement
           </Link>
-        </div>
-
-        <div className="mt-8 p-4 bg-blue-50 rounded-lg">
+        </div>        <div className="mt-8 p-4 bg-blue-50 rounded-lg">
           <h4 className="font-medium text-blue-900 mb-2">🚀 Profitez de vos fonctionnalités Pro :</h4>
           <ul className="text-sm text-blue-800 space-y-1">
             <li>• Tâches et projets illimités</li>
@@ -149,5 +147,17 @@ export default function CheckoutSuccessPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    }>
+      <CheckoutSuccessContent />
+    </Suspense>
   )
 }

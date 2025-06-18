@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
-export default function CheckoutCancelPage() {
+function CheckoutCancelContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -68,9 +68,20 @@ export default function CheckoutCancelPage() {
             <Link href="/contact" className="text-blue-600 hover:underline ml-1">
               Contactez notre équipe support
             </Link>
-          </p>
-        </div>
+          </p>        </div>
       </div>
     </div>
+  )
+}
+
+export default function CheckoutCancelPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    }>
+      <CheckoutCancelContent />
+    </Suspense>
   )
 }

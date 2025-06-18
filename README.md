@@ -37,3 +37,24 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 
 npm install resend
+
+Étape 2 : Activation du mode Live (plus tard)
+Quand vous serez prêt :
+
+Dans Stripe Dashboard :
+
+Activez votre compte (fournir infos business)
+Récupérez vos clés de production (pk_live_... et sk_live_...)
+Mettre à jour les variables Vercel :
+
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = pk_live_...
+STRIPE_SECRET_KEY = sk_live_...
+
+Créer les prix en mode Live :
+
+Recréer vos produits/prix en mode production
+Mettre à jour STRIPE_PRO_PRICE_ID
+Webhook en production :
+
+Configurer l'endpoint : https://chronoflow-nextjs.vercel.app/api/webhooks/stripe
+Récupérer le nouveau STRIPE_WEBHOOK_SECRET
