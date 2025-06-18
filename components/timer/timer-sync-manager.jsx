@@ -30,7 +30,6 @@ export default function TimerSyncManager({
 	// Gérer les événements de synchronisation
 	useTaskSynchronization({
 		onTaskUpdate: useCallback((taskId, duration) => {
-			console.log('[TimerSyncManager] Task updated:', taskId, duration)
 			if (typeof onTaskUpdate === 'function') {
 				onTaskUpdate(taskId, duration)
 			}
@@ -38,7 +37,6 @@ export default function TimerSyncManager({
 		}, [onTaskUpdate, forceGlobalRefresh]),
 
 		onTimerStart: useCallback((taskId, task) => {
-			console.log('[TimerSyncManager] Timer started:', taskId, task?.title)
 			if (typeof onTimerStateChange === 'function') {
 				onTimerStateChange('start', taskId, task)
 			}
@@ -46,7 +44,6 @@ export default function TimerSyncManager({
 		}, [onTimerStateChange, forceGlobalRefresh]),
 
 		onTimerStop: useCallback((taskId, duration, task) => {
-			console.log('[TimerSyncManager] Timer stopped:', taskId, duration, task?.title)
 			if (typeof onTimerStateChange === 'function') {
 				onTimerStateChange('stop', taskId, task, duration)
 			}
@@ -54,7 +51,6 @@ export default function TimerSyncManager({
 		}, [onTimerStateChange, forceGlobalRefresh]),
 
 		onTimerPause: useCallback((taskId, task) => {
-			console.log('[TimerSyncManager] Timer paused:', taskId, task?.title)
 			if (typeof onTimerStateChange === 'function') {
 				onTimerStateChange('pause', taskId, task)
 			}
@@ -62,7 +58,6 @@ export default function TimerSyncManager({
 		}, [onTimerStateChange, forceGlobalRefresh]),
 
 		onTimerResume: useCallback((taskId, task) => {
-			console.log('[TimerSyncManager] Timer resumed:', taskId, task?.title)
 			if (typeof onTimerStateChange === 'function') {
 				onTimerStateChange('resume', taskId, task)
 			}
@@ -70,7 +65,6 @@ export default function TimerSyncManager({
 		}, [onTimerStateChange, forceGlobalRefresh]),
 
 		onTimerSync: useCallback((data) => {
-			console.log('[TimerSyncManager] Timer sync:', data)
 			forceGlobalRefresh()
 		}, [forceGlobalRefresh])
 	})

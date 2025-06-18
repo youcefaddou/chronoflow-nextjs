@@ -32,8 +32,6 @@ export async function POST(request) {
       );
     }
 
-    console.log('Webhook reçu:', event.type);
-
     // Traiter les différents types d'événements
     switch (event.type) {
       case 'customer.subscription.created':
@@ -55,9 +53,6 @@ export async function POST(request) {
       case 'invoice.payment_failed':
         await handlePaymentFailed(event.data.object);
         break;
-
-      default:
-        console.log(`Événement non traité: ${event.type}`);
     }
 
     return NextResponse.json({ received: true });
@@ -74,8 +69,6 @@ export async function POST(request) {
 // Gestion de la création d'abonnement
 async function handleSubscriptionCreated(subscription) {
   try {
-    console.log('Nouvel abonnement créé:', subscription.id);
-    
     await connectMongo();
     
     // Trouver l'utilisateur par customer ID
@@ -92,7 +85,6 @@ async function handleSubscriptionCreated(subscription) {
       };
 
       await updateUserSubscription(user._id, subscriptionData);
-      console.log('Abonnement créé pour l\'utilisateur:', user._id);
     }
   } catch (error) {
     console.error('Erreur lors de la création d\'abonnement:', error);
@@ -102,8 +94,6 @@ async function handleSubscriptionCreated(subscription) {
 // Gestion de la mise à jour d'abonnement
 async function handleSubscriptionUpdated(subscription) {
   try {
-    console.log('Abonnement mis à jour:', subscription.id);
-    
     await connectMongo();
     
     const user = await User.findOne({ 'subscription.stripeSubscriptionId': subscription.id });
@@ -119,7 +109,6 @@ async function handleSubscriptionUpdated(subscription) {
       };
 
       await updateUserSubscription(user._id, subscriptionData);
-      console.log('Abonnement mis à jour pour l\'utilisateur:', user._id);
     }
   } catch (error) {
     console.error('Erreur lors de la mise à jour d\'abonnement:', error);
@@ -129,15 +118,12 @@ async function handleSubscriptionUpdated(subscription) {
 // Gestion de l'annulation d'abonnement
 async function handleSubscriptionDeleted(subscription) {
   try {
-    console.log('Abonnement annulé:', subscription.id);
-    
     await connectMongo();
     
     const user = await User.findOne({ 'subscription.stripeSubscriptionId': subscription.id });
     
     if (user) {
       await cancelUserSubscription(user._id);
-      console.log('Abonnement annulé pour l\'utilisateur:', user._id);
     }
   } catch (error) {
     console.error('Erreur lors de l\'annulation d\'abonnement:', error);
@@ -146,9 +132,7 @@ async function handleSubscriptionDeleted(subscription) {
 
 // Gestion du paiement réussi
 async function handlePaymentSucceeded(invoice) {
-  try {
-    console.log('Paiement réussi pour la facture:', invoice.id);
-    
+  try {   
     if (invoice.subscription) {
       // Récupérer les détails de l'abonnement
       const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
@@ -162,8 +146,6 @@ async function handlePaymentSucceeded(invoice) {
 // Gestion de l'échec de paiement
 async function handlePaymentFailed(invoice) {
   try {
-    console.log('Échec de paiement pour la facture:', invoice.id);
-    
     await connectMongo();
     
     if (invoice.subscription) {
@@ -181,7 +163,6 @@ async function handlePaymentFailed(invoice) {
         };
 
         await updateUserSubscription(user._id, subscriptionData);
-        console.log('Statut d\'échec de paiement appliqué à l\'utilisateur:', user._id);
       }
     }
   } catch (error) {

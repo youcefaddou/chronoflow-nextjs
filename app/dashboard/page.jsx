@@ -56,7 +56,6 @@ export default function DashboardPage() {	const { t } = useTranslation()
 			return
 		}
 		
-		console.log('handleSaveTimerTask: Saving task', taskData)
 				try {
 			const res = await fetch('/api/tasks', {
 				method: 'POST',
@@ -71,8 +70,6 @@ export default function DashboardPage() {	const { t } = useTranslation()
 					isFinished: true,
 				}),
 			})
-			
-			console.log('handleSaveTimerTask: Response status', res.status)
 			
 			const data = await res.json()
 			if (!res.ok) {
@@ -134,14 +131,14 @@ export default function DashboardPage() {	const { t } = useTranslation()
 			}
 			
 			// Message de succès avec statistiques
-			setImportMessage(`✅ Import réussi ! ${data.imported} nouvelles tâches importées (${data.total} événements scannés)`)
+			setImportMessage(` Import réussi ! ${data.imported} nouvelles tâches importées (${data.total} événements scannés)`)
 			
 			// Effacer le message après 5 secondes
 			setTimeout(() => setImportMessage(''), 5000)
 			
 		} catch (err) {
 			console.error('Error importing Google Calendar:', err)
-			setImportError('❌ ' + err.message)
+			setImportError(err.message)
 			
 			// Effacer l'erreur après 5 secondes
 			setTimeout(() => setImportError(''), 5000)
@@ -186,7 +183,6 @@ export default function DashboardPage() {	const { t } = useTranslation()
 	// Charger les tâches
 	const loadTasks = async () => {
 		if (!user?.id) {
-			console.log('loadTasks: No user ID, skipping')
 			return
 		}
 

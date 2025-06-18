@@ -8,11 +8,6 @@ export default function CheckoutCancelPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  useEffect(() => {
-    // Ici, on pourrait logger l'annulation pour des analyses
-    console.log('Paiement annulé par l\'utilisateur')
-  }, [])
-
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="max-w-md mx-auto text-center">

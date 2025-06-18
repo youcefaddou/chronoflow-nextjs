@@ -3,9 +3,7 @@ import crypto from 'crypto'
 
 export async function GET() {
 	try {
-		console.log('🔐 Initiating Google OAuth for WEB CLIENT')
-		console.log('📍 Redirect URI:', process.env.GOOGLE_REDIRECT_URI)
-		console.log('🔑 Client ID (first 10 chars):', process.env.GOOGLE_CLIENT_ID?.substring(0, 10))
+	
 		
 		const scopes = [
 			'https://www.googleapis.com/auth/userinfo.profile',
@@ -28,9 +26,7 @@ export async function GET() {
 		})
 		
 		const authUrl = `${baseUrl}?${params.toString()}`
-
-		console.log('✅ Auth URL generated manually (no PKCE)')
-		console.log('🔄 Redirecting to Google...')
+		
 		return NextResponse.redirect(authUrl)
 	} catch (error) {
 		console.error('❌ Google auth error:', error)

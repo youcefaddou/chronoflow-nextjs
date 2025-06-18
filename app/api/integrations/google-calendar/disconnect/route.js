@@ -26,8 +26,6 @@ export async function POST(request) {
       }
     })
 
-    console.log(`[Google Calendar] Déconnexion pour l'utilisateur ${decoded.userId}`)
-
     return NextResponse.json({ success: true, message: 'Google Calendar déconnecté avec succès' })
 
   } catch (error) {

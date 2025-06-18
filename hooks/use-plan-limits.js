@@ -52,14 +52,11 @@ export function usePlanLimits() {
   useEffect(() => {
     async function fetchUserData() {
       if (!user) {
-        console.log('🔍 usePlanLimits: No user, setting defaults')
         setUserStats({ tasksCount: 0, exportsThisMonth: 0 })
         setUserPlan('free')
         setIsLoading(false)
         return
       }
-
-      console.log('🔍 usePlanLimits: Fetching data for user')
       setIsLoading(true)
 
       try {
@@ -68,10 +65,8 @@ export function usePlanLimits() {
         if (subscriptionResponse.ok) {
           const subscriptionData = await subscriptionResponse.json()
           const plan = subscriptionData.subscription?.plan || 'free'
-          console.log('🔍 usePlanLimits: User plan:', plan)
           setUserPlan(plan)
         } else {
-          console.log('🔍 usePlanLimits: Subscription API failed, defaulting to free')
           setUserPlan('free')
         }
 
@@ -80,13 +75,11 @@ export function usePlanLimits() {
         if (tasksResponse.ok) {
           const tasksData = await tasksResponse.json()
           const taskCount = tasksData.length || 0
-          console.log('🔍 usePlanLimits: Task count:', taskCount)
           setUserStats(prev => ({
             ...prev,
             tasksCount: taskCount
           }))
         } else {
-          console.log('🔍 usePlanLimits: Tasks API failed, defaulting to 0')
           setUserStats(prev => ({
             ...prev,
             tasksCount: 0
@@ -110,15 +103,6 @@ export function usePlanLimits() {
   }, [user])
 
   const limits = PLAN_LIMITS[userPlan] || PLAN_LIMITS.free
-
-  // Debug logs
-  console.log('🔍 usePlanLimits Debug:', {
-    user: !!user,
-    userPlan,
-    userStats,
-    limits,
-    isLoading
-  })
 
   // Fonctions de vérification des limites
   const canCreateTask = () => {

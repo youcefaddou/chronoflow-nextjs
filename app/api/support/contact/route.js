@@ -42,14 +42,6 @@ export async function POST(request) {
     if (!process.env.RESEND_API_KEY) {
       console.warn('RESEND_API_KEY manquante, passage en mode simulation')
       
-      // Mode simulation si Resend n'est pas configuré
-      console.log('=== SIMULATION EMAIL CONTACT ===')
-      console.log('De:', email || 'Email non fourni')
-      console.log('Sujet:', subject.trim())
-      console.log('Message:', message.trim())
-      console.log('Langue:', language)
-      console.log('================================')
-      
       return NextResponse.json({
         success: true,
         message: language === 'fr' 

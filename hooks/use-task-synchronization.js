@@ -86,7 +86,6 @@ export function useTaskSynchronization(callbacks = {}) {
 // Mise à jour d'une tâche (durée sauvegardée)
 export function emitTaskUpdate(taskId, duration) {
 	if (typeof window !== 'undefined') {
-		console.log('[Sync] Task updated:', taskId, duration)
 		window.dispatchEvent(new CustomEvent('taskUpdated', { 
 			detail: { taskId, duration } 
 		}))
@@ -96,7 +95,6 @@ export function emitTaskUpdate(taskId, duration) {
 // Démarrage du timer
 export function emitTimerStart(taskId, task) {
 	if (typeof window !== 'undefined') {
-		console.log('[Sync] Timer started:', taskId, task?.title)
 		window.dispatchEvent(new CustomEvent('timerStarted', { 
 			detail: { taskId, task } 
 		}))
@@ -106,7 +104,6 @@ export function emitTimerStart(taskId, task) {
 // Arrêt du timer
 export function emitTimerStop(taskId, duration, task) {
 	if (typeof window !== 'undefined') {
-		console.log('[Sync] Timer stopped:', taskId, duration, task?.title)
 		window.dispatchEvent(new CustomEvent('timerStopped', { 
 			detail: { taskId, duration, task } 
 		}))
@@ -116,7 +113,6 @@ export function emitTimerStop(taskId, duration, task) {
 // Pause du timer
 export function emitTimerPause(taskId, task) {
 	if (typeof window !== 'undefined') {
-		console.log('[Sync] Timer paused:', taskId, task?.title)
 		window.dispatchEvent(new CustomEvent('timerPaused', { 
 			detail: { taskId, task } 
 		}))
@@ -126,7 +122,6 @@ export function emitTimerPause(taskId, task) {
 // Reprise du timer
 export function emitTimerResume(taskId, task) {
 	if (typeof window !== 'undefined') {
-		console.log('[Sync] Timer resumed:', taskId, task?.title)
 		window.dispatchEvent(new CustomEvent('timerResumed', { 
 			detail: { taskId, task } 
 		}))
@@ -136,7 +131,6 @@ export function emitTimerResume(taskId, task) {
 // Synchronisation générale des timers
 export function emitTimerSync(data) {
 	if (typeof window !== 'undefined') {
-		console.log('[Sync] Timer sync:', data)
 		window.dispatchEvent(new CustomEvent('timerSync', { 
 			detail: data 
 		}))

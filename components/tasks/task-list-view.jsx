@@ -210,8 +210,6 @@ function TaskListView({ tasks = [], onTaskUpdate, user, lastSavedTaskId, lastSav
 	const handleAddTaskOpen = () => setShowAddTaskModal(true)
 	const handleAddTaskClose = () => setShowAddTaskModal(false)
 		const handleAddTaskSave = async (newTask) => {
-		console.log('handleAddTaskSave: Saving new task', newTask)
-		
 		try {
 			const res = await fetch('/api/tasks', {
 				method: 'POST',
@@ -225,10 +223,7 @@ function TaskListView({ tasks = [], onTaskUpdate, user, lastSavedTaskId, lastSav
 					durationSeconds: 0,
 					isFinished: false,
 				}),
-			})
-			
-			console.log('handleAddTaskSave: Response status', res.status)
-			
+			})		
 			if (!res.ok) {
 				const text = await res.text()
 				console.error('handleAddTaskSave: Error response', text)
@@ -239,8 +234,6 @@ function TaskListView({ tasks = [], onTaskUpdate, user, lastSavedTaskId, lastSav
 			}
 			
 			const data = await res.json()
-			console.log('handleAddTaskSave: Task saved successfully', data)
-			
 			onTaskUpdate && onTaskUpdate()
 			setShowAddTaskModal(false)
 		} catch (err) {
@@ -250,7 +243,6 @@ function TaskListView({ tasks = [], onTaskUpdate, user, lastSavedTaskId, lastSav
 				: `Error adding task: ${err.message}`)
 		}
 	}
-
 	const handleTaskTimerUpdate = (taskId, newDuration) => {
 		setLocalTaskDurations(prev => ({
 			...prev,

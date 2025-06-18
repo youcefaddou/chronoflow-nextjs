@@ -68,14 +68,6 @@ export async function GET(request) {
 		const { searchParams } = new URL(request.url)
 		const code = searchParams.get('code')
 		const error = searchParams.get('error')
-		const state = searchParams.get('state')
-
-		console.log('Google callback received:', { 
-			code: code ? 'present' : 'missing', 
-			error, 
-			state,
-			redirectUri: process.env.GOOGLE_REDIRECT_URI 
-		})
 
 		if (error) {
 			return NextResponse.redirect(`${process.env.NEXTAUTH_URL || 'http://localhost:3030'}/login?error=google_auth_error`)
@@ -84,8 +76,6 @@ export async function GET(request) {
 		}		// Exchange code for tokens using direct HTTP approach to avoid PKCE issues
 		let tokens
 		try {
-			console.log('🔄 Attempting token exchange with authorization code...')
-			console.log('📋 Using redirect URI:', process.env.GOOGLE_REDIRECT_URI)
 			
 			// Use direct fetch to Google's token endpoint to have full control
 			// This avoids any automatic PKCE parameter injection by the Google client library
@@ -115,7 +105,6 @@ export async function GET(request) {
 			tokens = tokenData
 			oauth2Client.setCredentials(tokens)
 			
-			console.log('✅ Token exchange successful via direct HTTP')
 		} catch (tokenError) {
 			console.error('❌ Token exchange error:', tokenError)
 			console.error('🔍 Error details:', tokenError.message)

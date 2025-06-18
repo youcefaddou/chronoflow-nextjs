@@ -39,28 +39,27 @@ export function useCalendarSync(events = [], onEventsUpdate = null) {
 	// Écouter les événements de synchronisation
 	useTaskSynchronization({
 		onTaskUpdate: useCallback((taskId, duration) => {
-			console.log('[CalendarSync] Updating event duration:', taskId, duration)
 			updateEvent(taskId, { durationSeconds: duration })
 		}, [updateEvent]),
 
 		onTimerStart: useCallback((taskId) => {
-			console.log('[CalendarSync] Timer started for event:', taskId)
+            console.error('[CalendarSync] Timer started for event:', taskId)
 			// Peut être utilisé pour mettre à jour l'état visuel
 			forceRefresh()
 		}, [forceRefresh]),
 
 		onTimerStop: useCallback((taskId, duration) => {
-			console.log('[CalendarSync] Timer stopped for event:', taskId, duration)
+			console.error('[CalendarSync] Timer stopped for event:', taskId, duration)
 			updateEvent(taskId, { durationSeconds: duration })
 		}, [updateEvent]),
 
 		onTimerPause: useCallback((taskId) => {
-			console.log('[CalendarSync] Timer paused for event:', taskId)
+			console.error('[CalendarSync] Timer paused for event:', taskId)
 			forceRefresh()
 		}, [forceRefresh]),
 
 		onTimerResume: useCallback((taskId) => {
-			console.log('[CalendarSync] Timer resumed for event:', taskId)
+			console.error('[CalendarSync] Timer resumed for event:', taskId)
 			forceRefresh()
 		}, [forceRefresh])
 	})
@@ -109,12 +108,12 @@ export function useTaskListSync(tasks = [], onTasksUpdate = null) {
 	// Écouter les événements de synchronisation
 	useTaskSynchronization({
 		onTaskUpdate: useCallback((taskId, duration) => {
-			console.log('[TaskListSync] Updating task duration:', taskId, duration)
+			console.error('[TaskListSync] Updating task duration:', taskId, duration)
 			updateTask(taskId, { durationSeconds: duration })
 		}, [updateTask]),
 
 		onTimerStop: useCallback((taskId, duration) => {
-			console.log('[TaskListSync] Timer stopped for task:', taskId, duration)
+			console.error('[TaskListSync] Timer stopped for task:', taskId, duration)
 			updateTask(taskId, { durationSeconds: duration })
 		}, [updateTask])
 	})

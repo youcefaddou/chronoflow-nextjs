@@ -12,11 +12,7 @@ export async function POST(request) {
         { status: 400 }
       )
     }
-
-    // Simuler la sauvegarde des préférences
-    // Dans un vrai projet, vous sauvegarderiez les préférences dans votre base de données
-    console.log('Simulation: Sauvegarde de la langue:', language)
-    
+ 
     // Simuler un délai de traitement
     await new Promise(resolve => setTimeout(resolve, 300))
     

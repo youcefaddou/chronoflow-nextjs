@@ -107,14 +107,8 @@ async function createIndexes() {
 
 async function main() {
   try {
-    console.log('Starting MongoDB indexation for plan limits...')
-    console.log('Current working directory:', process.cwd())
-    console.log('Script path:', import.meta.url)
-    
     await connectDatabase()
     await createIndexes()
-    
-    console.log('Indexation completed successfully!')
     process.exit(0)
     
   } catch (error) {
@@ -144,7 +138,6 @@ process.on('SIGTERM', async () => {
 })
 
 // Exécuter le script si appelé directement
-
 main()
 
 export { createIndexes, showIndexStats, main as setupIndexes }

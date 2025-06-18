@@ -22,8 +22,9 @@ export async function GET(request) {
     } catch (jwtError) {
       console.error('[Google Auth] Erreur JWT:', jwtError)
       return NextResponse.json({ error: 'Token invalide' }, { status: 401 })
-    }    const userId = decoded.userId
-    console.log('[Google Auth] Utilisateur authentifié:', userId)
+    }   
+     const userId = decoded.userId
+
 
     // Configuration OAuth2 client (pour Google Calendar)
     const oauth2Client = new google.auth.OAuth2(
@@ -39,11 +40,6 @@ export async function GET(request) {
       prompt: 'consent',
       state: userId
     })
-
-    console.log('[Google Auth] URL générée:', authUrl)
-    console.log('[Google Auth] Client ID utilisé:', process.env.GOOGLE_CLIENT_ID)
-    console.log('[Google Auth] Redirect URI configurée:', process.env.GOOGLE_CALENDAR_REDIRECT_URI)
-
     return NextResponse.json({ authUrl })
   } catch (error) {
     console.error('[Google Auth] Erreur:', error)

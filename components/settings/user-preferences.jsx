@@ -59,7 +59,11 @@ export default function UserPreferences() {
           body: JSON.stringify({ language: newLanguage })
         })
       } catch (error) {
-        console.log('Could not save language preference to server:', error)
+        console.error('Error saving language preference to server:', error)
+        showMessage(
+          t('settings.items.languageSaveError') || 'Erreur lors de la sauvegarde de la langue',
+          'error'
+        )
       }
       
       showMessage(
