@@ -9,6 +9,7 @@ import { Calendar, List, Focus, Download, CloudDownload } from 'lucide-react'
 import Timer from '../../components/timer/timer'
 import SaveTimerModal from '../../components/timer/save-timer-modal'
 import FocusZoneModal from '../../components/dashboard/FocusZoneModal'
+import TaskLimitProgressBar from '../../components/dashboard/TaskLimitProgressBar'
 import TaskListView from '../../components/tasks/task-list-view'
 import CalendarView from '../../components/calendar/calendar-view'
 import TaskExporterModal from '../../components/export/task-exporter'
@@ -287,38 +288,9 @@ export default function DashboardPage() {	const { t } = useTranslation()
 									setShowSaveTimer(true)
 								}}
 							/>
-						</div>
-
+						</div>						
 						{/* Section Actions - Layout adaptatif */}
 						<div className="flex flex-col gap-3 lg:gap-2 min-w-0 flex-1 lg:flex-initial">
-							{/* Boutons de vue - Responsive */}
-							<div className="flex items-center bg-gray-100 rounded-lg p-1 w-full sm:w-auto sm:self-center lg:self-end">
-								<button
-									onClick={() => setViewMode('calendar')}
-									className={`flex items-center justify-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-md transition-colors flex-1 sm:flex-initial ${
-										viewMode === 'calendar' 
-											? 'bg-white text-blue-600 shadow-sm' 
-											: 'text-gray-600 hover:text-gray-900'
-									}`}
-									title={t('dashboard.calendar', 'Calendrier')}
-								>
-									<Calendar className="w-4 h-4" />
-									<span className="text-xs sm:text-sm font-medium">{t('dashboard.calendar', 'Calendrier')}</span>
-								</button>
-								<button
-									onClick={() => setViewMode('list')}
-									className={`flex items-center justify-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-md transition-colors flex-1 sm:flex-initial ${
-										viewMode === 'list' 
-											? 'bg-white text-blue-600 shadow-sm' 
-											: 'text-gray-600 hover:text-gray-900'
-									}`}
-									title={t('dashboard.tasks', 'Tâches')}
-								>
-									<List className="w-4 h-4" />
-									<span className="text-xs sm:text-sm font-medium">{t('dashboard.tasks', 'Tâches')}</span>
-								</button>
-							</div>
-
 							{/* Container des actions - Empilage intelligent */}
 							<div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
 								{/* Google Tasks status - Placement adaptatif */}
@@ -380,6 +352,46 @@ export default function DashboardPage() {	const { t } = useTranslation()
 						</div>					</div>
 				</div>
 			</div>			
+			{/* Titre principal avec barre de progression */}
+			<div className="bg-white border-b border-gray-200 px-3 sm:px-4 lg:px-6 py-4">
+				<div className="flex items-center justify-between">
+					<div className="flex items-center">
+						<h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+							{viewMode === 'calendar' ? t('dashboard.calendar', 'Calendrier') : t('dashboard.tasks', 'Tâches')}
+						</h1>
+						<TaskLimitProgressBar />
+					</div>
+					
+					{/* Boutons de vue - Déplacés ici pour une meilleure UX */}
+					<div className="flex items-center bg-gray-100 rounded-lg p-1">
+						<button
+							onClick={() => setViewMode('calendar')}
+							className={`flex items-center justify-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-md transition-colors ${
+								viewMode === 'calendar' 
+									? 'bg-white text-blue-600 shadow-sm' 
+									: 'text-gray-600 hover:text-gray-900'
+							}`}
+							title={t('dashboard.calendar', 'Calendrier')}
+						>
+							<Calendar className="w-4 h-4" />
+							<span className="hidden sm:inline text-sm font-medium">{t('dashboard.calendar', 'Calendrier')}</span>
+						</button>
+						<button
+							onClick={() => setViewMode('list')}
+							className={`flex items-center justify-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-md transition-colors ${
+								viewMode === 'list' 
+									? 'bg-white text-blue-600 shadow-sm' 
+									: 'text-gray-600 hover:text-gray-900'
+							}`}
+							title={t('dashboard.tasks', 'Tâches')}
+						>
+							<List className="w-4 h-4" />
+							<span className="hidden sm:inline text-sm font-medium">{t('dashboard.tasks', 'Tâches')}</span>
+						</button>
+					</div>
+				</div>
+			</div>
+			
 			{/* Zone de contenu principal - Responsive */}
 			<div className="flex-1 p-3 sm:p-4 lg:p-6 overflow-hidden">
 				<div className="h-full">

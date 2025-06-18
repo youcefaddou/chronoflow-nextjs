@@ -66,7 +66,7 @@ const TimerDisplay = React.memo(function TimerDisplay({
 	}, [duration, isRunning, isPaused, getElapsedSeconds])
 	
 	return (
-		<span className={`timer-display-text font-mono text-4xl font-bold ${className}`} ref={timerRef}>
+		<span className={`timer-display-text font-mono text-3xl font-bold ${className}`} ref={timerRef}>
 			{formatDuration(duration)}
 		</span>
 	)

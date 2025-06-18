@@ -11,4 +11,7 @@ const taskSchema = new mongoose.Schema({
   durationSeconds: { type: Number, default: 0 },
 })
 
+// Index pour optimiser les requêtes de comptage des limitations
+taskSchema.index({ userId: 1 })
+
 export default mongoose.models.Task || mongoose.model('Task', taskSchema)

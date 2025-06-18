@@ -102,101 +102,22 @@
   background-color: #fef3c7 !important;
 }
 
-/* ===== CORRECTION COULEURS CALENDRIER ===== */
-
-/* Assurer que tous les textes du calendrier sont visibles */
-.fc {
-  color: #374151 !important;
+/* Boutons des tâches dans les événements */
+.task-timer-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
-.fc-theme-standard .fc-scrollgrid {
-  background-color: #ffffff !important;
+.task-timer-buttons button {
+  flex-shrink: 0;
+  transition: all 0.2s;
 }
 
-.fc .fc-col-header-cell {
-  background-color: #f9fafb !important;
-}
-
-.fc .fc-col-header-cell-cushion {
-  color: #374151 !important;
-  font-weight: 600;
-}
-
-.fc .fc-daygrid-day-number {
-  color: #374151 !important;
-  font-weight: 500;
-}
-
-.fc .fc-timegrid-axis-cushion {
-  color: #374151 !important;
-  font-size: 0.75rem;
-}
-
-.fc .fc-timegrid-slot-label-cushion {
-  color: #374151 !important;
-}
-
-.fc .fc-scrollgrid-section-header td {
-  background-color: #f9fafb !important;
-}
-
-/* Grille du calendrier */
-.fc .fc-scrollgrid-section-body td {
-  background-color: #ffffff !important;
-}
-
-/* Ligne du jour actuel */
-.fc .fc-scrollgrid-section-body .fc-day-today {
-  background-color: #fef3c7 !important;
-}
-
-/* Événements du calendrier */
-.fc .fc-daygrid-event {
-  background-color: #3b82f6 !important;
-  border-color: #3b82f6 !important;
-  color: #ffffff !important;
-}
-
-.fc .fc-timegrid-event {
-  background-color: #3b82f6 !important;
-  border-color: #3b82f6 !important;
-  color: #ffffff !important;
-}
-
-/* Lignes de séparation */
-.fc .fc-scrollgrid-section-header {
-  border-bottom: 1px solid #e5e7eb !important;
-}
-
-.fc .fc-scrollgrid-section-body {
-  border-color: #e5e7eb !important;
-}
-
-/* Bordures des cellules */
-.fc .fc-daygrid-day {
-  border-color: #e5e7eb !important;
-}
-
-.fc .fc-timegrid-slot {
-  border-color: #e5e7eb !important;
-}
-
-/* Responsive pour le calendrier */
-@media (max-width: 768px) {
-  .fc .fc-col-header-cell-cushion {
-    font-size: 0.75rem;
-    padding: 0.25rem;
-  }
-  
-  .fc .fc-daygrid-day-number {
-    font-size: 0.875rem;
-    padding: 0.25rem;
-  }
-  
-  .fc .fc-timegrid-axis-cushion {
-    font-size: 0.625rem;
-    padding: 0.125rem;
-  }
+.task-timer-buttons button:hover {
+  transform: scale(1.1);
 }
 
 /* Responsive */
@@ -431,10 +352,84 @@
   .dashboard-actions {
     gap: 0.25rem;
   }
-    .dashboard-actions button {
+  
+  .dashboard-actions button {
     padding: 0.5rem;
     font-size: 0.75rem;
   }
+}
+
+/* Sidebar responsive */
+.dashboard-sidebar {
+  transition: transform 0.3s ease-in-out;
+}
+
+@media (max-width: 768px) {
+  .dashboard-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 280px;
+    z-index: 50;
+    background: white;
+    border-right: 1px solid #e5e7eb;
+    transform: translateX(-100%);
+  }
+  
+  .dashboard-sidebar.open {
+    transform: translateX(0);
+  }
+  
+  .dashboard-sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 40;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .dashboard-sidebar-overlay.open {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+/* Masquer la barre de scroll horizontale de la sidebar */
+.dashboard-sidebar {
+  overflow-x: hidden !important;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.dashboard-sidebar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Assurer que les éléments de la sidebar ne débordent pas */
+.dashboard-sidebar * {
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Prévenir le débordement horizontal */
+.sidebar-nav-item {
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+/* Texte qui peut déborder */
+.sidebar-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Main content area responsive */

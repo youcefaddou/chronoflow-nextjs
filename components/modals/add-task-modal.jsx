@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import usePlanLimits from '../../hooks/use-plan-limits'
+import { PlanLimitModal } from '../common/plan-limit-alert'
 
 const COLORS = [
 	'#2563eb', // blue
@@ -130,20 +132,21 @@ function AddTaskModal({
 	lang: langProp 
 }) {
 	const { t, i18n } = useTranslation()
+	const { canCreateTask, getLimitMessage, updateStats } = usePlanLimits()
 	const lang = langProp || (i18n?.language?.startsWith('en') ? 'en' : 'fr')
 	const [title, setTitle] = useState(initialTitle)
 	const [desc, setDesc] = useState(initialDesc)
 	const [start, setStart] = useState(initialStart || new Date())
 	const [end, setEnd] = useState(initialEnd || new Date())
 	const [color, setColor] = useState(initialColor)
+	const [showLimitModal, setShowLimitModal] = useState(false)
 
 	useEffect(() => {
 		setTitle(initialTitle)
 		setDesc(initialDesc)
 		setStart(initialStart || new Date())
 		setEnd(initialEnd || new Date())
-		setColor(initialColor)
-	}, [initialTitle, initialDesc, initialStart, initialEnd, initialColor])
+		setColor(initialColor)	}, [initialTitle, initialDesc, initialStart, initialEnd, initialColor])
 
 	// Ajout d'un gestionnaire de soumission explicite
 	const handleSubmit = (e) => {
@@ -152,6 +155,12 @@ function AddTaskModal({
 		// Validation
 		if (!title.trim()) return;
 		if (!start || !end) return;
+		
+		// Vérifier la limite pour les nouvelles tâches (pas pour les modifications)
+		if (!showDelete && !canCreateTask()) {
+			setShowLimitModal(true)
+			return
+		}
 		
 		// Créer l'objet tâche
 		const task = {
@@ -165,10 +174,14 @@ function AddTaskModal({
 		// Appeler onSave avec les données de la tâche
 		onSave && onSave(task);
 		
+		// Mettre à jour les statistiques si c'est une nouvelle tâche
+		if (!showDelete) {
+			updateStats('tasksCount', true)
+		}
+		
 		// Réinitialiser le formulaire (optionnel si vous fermez la modale)
 		setTitle('');
-		setDesc('');
-		setStart(new Date());
+		setDesc('');		setStart(new Date());
 		setEnd(new Date());
 		setColor(COLORS[0]);
 		
@@ -176,90 +189,104 @@ function AddTaskModal({
 		onClose && onClose();
 	};
 
-	if (!open) return null
+	if (!open) return null;
+	
 	return (
-		<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/40'>
-			<div className='bg-white rounded-xl shadow-xl max-w-lg w-full p-6 relative animate-fade-in'>
-				<button
-					className='absolute top-2 right-2 text-gray-500 hover:text-rose-600 text-2xl font-bold'
-					onClick={onClose}
-					aria-label={lang === 'fr' ? 'Fermer' : 'Close'}
-				>
-					&times;
-				</button>				<h2 className='text-xl font-bold mb-4 text-gray-900'>
-					{showDelete ? t('dashboard.tasks.edit', 'Modifier la tâche') : t('dashboard.tasks.create', 'Créer une tâche')}
-				</h2>
-				<form onSubmit={handleSubmit} className='flex flex-col gap-3'>
-					<div className='flex flex-col gap-3'>						<input
-							type='text'
-							placeholder={t('dashboard.tasks.title', 'Titre')}
-							className='border rounded px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500'
-							value={title}
-							onChange={e => setTitle(e.target.value)}
-							required
-						/>
-						<textarea
-							placeholder={t('dashboard.tasks.description', 'Description')}
-							className='border rounded px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500'
-							value={desc}
-							onChange={e => setDesc(e.target.value)}
-						/>						<div className='flex gap-2'>
+		<>
+			<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/40'>
+				<div className='bg-white rounded-xl shadow-xl max-w-lg w-full p-6 relative animate-fade-in'>
+					<button
+						className='absolute top-2 right-2 text-gray-500 hover:text-rose-600 text-2xl font-bold'
+						onClick={onClose}
+						aria-label={lang === 'fr' ? 'Fermer' : 'Close'}					>
+						&times;
+					</button>
+					<h2 className='text-xl font-bold mb-4 text-gray-900'>
+						{showDelete ? t('dashboard.tasks.edit', 'Modifier la tâche') : t('dashboard.tasks.create', 'Créer une tâche')}
+					</h2>
+					<form onSubmit={handleSubmit} className='flex flex-col gap-3'>
+						<div className='flex flex-col gap-3'>
 							<input
-								type='datetime-local'
-								className='border rounded px-2 py-1 flex-1 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500'
-								value={toLocalISOString(start)}
-								onChange={e => setStart(new Date(e.target.value))}
+								type='text'
+								placeholder={t('dashboard.tasks.title', 'Titre')}
+								className='border rounded px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500'
+								value={title}
+								onChange={e => setTitle(e.target.value)}
 								required
 							/>
-							<input
-								type='datetime-local'
-								className='border rounded px-2 py-1 flex-1 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500'
-								value={toLocalISOString(end)}
-								onChange={e => setEnd(new Date(e.target.value))}
-								required
+							<textarea
+								placeholder={t('dashboard.tasks.description', 'Description')}
+								className='border rounded px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500'
+								value={desc}
+								onChange={e => setDesc(e.target.value)}
 							/>
-						</div>
-						<div className='flex gap-2 items-center'>
-							<span className='text-sm'>{t('dashboard.tasks.color', 'Couleur')}:</span>
-							{COLORS.map(c => (
-								<button
-									key={c}
-									type='button'
-									className={`w-6 h-6 rounded-full border-2 ${color === c ? 'border-blue-600' : 'border-gray-200'}`}
-									style={{ background: c }}
-									onClick={() => setColor(c)}
-									aria-label={t('dashboard.tasks.chooseColor', 'Choisir la couleur')}
+							<div className='flex gap-2'>
+								<input
+									type='datetime-local'
+									className='border rounded px-2 py-1 flex-1 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500'
+									value={toLocalISOString(start)}
+									onChange={e => setStart(new Date(e.target.value))}
+									required
 								/>
-							))}
+								<input
+									type='datetime-local'
+									className='border rounded px-2 py-1 flex-1 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500'
+									value={toLocalISOString(end)}
+									onChange={e => setEnd(new Date(e.target.value))}
+									required
+								/>
+							</div>
+							<div className='flex gap-2 items-center'>
+								<span className='text-sm'>{t('dashboard.tasks.color', 'Couleur')}:</span>
+								{COLORS.map(c => (
+									<button
+										key={c}
+										type='button'
+										className={`w-6 h-6 rounded-full border-2 ${color === c ? 'border-blue-600' : 'border-gray-200'}`}
+										style={{ background: c }}
+										onClick={() => setColor(c)}
+										aria-label={t('dashboard.tasks.chooseColor', 'Choisir la couleur')}
+									/>
+								))}
+							</div>
 						</div>
-					</div>
-					<div className='flex gap-2 justify-end mt-4'>
-						{showDelete && (
+						<div className='flex gap-2 justify-end mt-4'>
+							{showDelete && (
+								<button
+									type='button'
+									className='px-4 py-2 rounded bg-rose-700 text-white font-semibold'
+									onClick={onDelete}
+								>
+									{t('dashboard.tasks.delete', 'Supprimer')}
+								</button>
+							)}
 							<button
 								type='button'
-								className='px-4 py-2 rounded bg-rose-700 text-white font-semibold'
-								onClick={onDelete}
+								className='px-4 py-2 rounded bg-gray-200 text-gray-700 font-semibold'
+								onClick={onClose}
 							>
-								{t('dashboard.tasks.delete', 'Supprimer')}
+								{t('dashboard.tasks.cancel', 'Annuler')}
 							</button>
-						)}
-						<button
-							type='button'
-							className='px-4 py-2 rounded bg-gray-200 text-gray-700 font-semibold'
-							onClick={onClose}
-						>
-							{t('dashboard.tasks.cancel', 'Annuler')}
-						</button>
-						<button
-							type='submit'
-							className='px-4 py-2 rounded bg-blue-700 text-white font-semibold'
-						>
-							{t('dashboard.tasks.save', 'Enregistrer')}
-						</button>
-					</div>
-				</form>
+							<button
+								type='submit'
+								className='px-4 py-2 rounded bg-blue-700 text-white font-semibold'
+							>
+								{t('dashboard.tasks.save', 'Enregistrer')}
+							</button>
+						</div>
+					</form>
+				</div>
 			</div>
-		</div>
+
+			{/* Modal de limitation */}
+			<PlanLimitModal				
+			isOpen={showLimitModal}
+				onClose={() => setShowLimitModal(false)}
+				type="tasks"
+				title={t('limits.tasks.maxReached') || 'Limite de tâches atteinte'}
+				message={getLimitMessage('tasks')}
+			/>
+		</>
 	)
 }
 
