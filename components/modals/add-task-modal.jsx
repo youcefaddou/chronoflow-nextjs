@@ -186,37 +186,34 @@ function AddTaskModal({
 					aria-label={lang === 'fr' ? 'Fermer' : 'Close'}
 				>
 					&times;
-				</button>
-				<h2 className='text-xl font-bold mb-4'>
+				</button>				<h2 className='text-xl font-bold mb-4 text-gray-900'>
 					{showDelete ? t('dashboard.tasks.edit', 'Modifier la tâche') : t('dashboard.tasks.create', 'Créer une tâche')}
 				</h2>
 				<form onSubmit={handleSubmit} className='flex flex-col gap-3'>
-					<div className='flex flex-col gap-3'>
-						<input
+					<div className='flex flex-col gap-3'>						<input
 							type='text'
 							placeholder={t('dashboard.tasks.title', 'Titre')}
-							className='border rounded px-3 py-2'
+							className='border rounded px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500'
 							value={title}
 							onChange={e => setTitle(e.target.value)}
 							required
 						/>
 						<textarea
 							placeholder={t('dashboard.tasks.description', 'Description')}
-							className='border rounded px-3 py-2'
+							className='border rounded px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500'
 							value={desc}
 							onChange={e => setDesc(e.target.value)}
-						/>
-						<div className='flex gap-2'>
+						/>						<div className='flex gap-2'>
 							<input
 								type='datetime-local'
-								className='border rounded px-2 py-1 flex-1'
+								className='border rounded px-2 py-1 flex-1 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500'
 								value={toLocalISOString(start)}
 								onChange={e => setStart(new Date(e.target.value))}
 								required
 							/>
 							<input
 								type='datetime-local'
-								className='border rounded px-2 py-1 flex-1'
+								className='border rounded px-2 py-1 flex-1 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500'
 								value={toLocalISOString(end)}
 								onChange={e => setEnd(new Date(e.target.value))}
 								required

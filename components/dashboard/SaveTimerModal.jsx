@@ -78,8 +78,7 @@ function SaveTimerModal({ open, elapsedSeconds, onClose, onSave }) {
 				>
 					&times;
 				</button>
-				
-				<h2 className='text-xl font-bold mb-4'>
+						<h2 className='text-xl font-bold mb-4 text-gray-900'>
 					{t('timer.saveTimeEntry') || 'Save Time Entry'}
 				</h2>
 
@@ -93,13 +92,12 @@ function SaveTimerModal({ open, elapsedSeconds, onClose, onSave }) {
 					</div>
 				</div>
 
-				<div className='flex flex-col gap-3'>
-					<input
+				<div className='flex flex-col gap-3'>					<input
 						type='text'
 						placeholder={t('timer.taskNameRequired') || 'Task name (required)'}
 						value={title}
 						onChange={e => setTitle(e.target.value)}
-						className='border rounded px-3 py-2 text-sm mb-1 focus:outline-none focus:ring-2 focus:ring-blue-500'
+						className='border rounded px-3 py-2 text-sm text-gray-900 mb-1 focus:outline-none focus:ring-2 focus:ring-blue-500'
 						required
 						autoFocus
 					/>
@@ -108,7 +106,7 @@ function SaveTimerModal({ open, elapsedSeconds, onClose, onSave }) {
 						placeholder={t('timer.descriptionOptional') || 'Description (optional)'}
 						value={desc}
 						onChange={e => setDesc(e.target.value)}
-						className='border rounded px-3 py-2 text-sm mb-1 focus:outline-none focus:ring-2 focus:ring-blue-500'
+						className='border rounded px-3 py-2 text-sm text-gray-900 mb-1 focus:outline-none focus:ring-2 focus:ring-blue-500'
 						rows={2}
 					/>
 
@@ -134,12 +132,11 @@ function SaveTimerModal({ open, elapsedSeconds, onClose, onSave }) {
 						<div>
 							<label className='text-xs font-semibold mb-1 block text-gray-600'>
 								{t('common.start') || 'Start'}
-							</label>
-							<input
+							</label>							<input
 								type='datetime-local'
 								value={toLocalISOString(start)}
 								onChange={e => setStart(new Date(e.target.value))}
-								className='border rounded px-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500'
+								className='border rounded px-3 py-2 text-sm text-gray-900 w-full focus:outline-none focus:ring-2 focus:ring-blue-500'
 							/>
 						</div>
 						<div>
@@ -150,7 +147,7 @@ function SaveTimerModal({ open, elapsedSeconds, onClose, onSave }) {
 								type='datetime-local'
 								value={toLocalISOString(end)}
 								onChange={e => setEnd(new Date(e.target.value))}
-								className='border rounded px-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500'
+								className='border rounded px-3 py-2 text-sm text-gray-900 w-full focus:outline-none focus:ring-2 focus:ring-blue-500'
 							/>
 						</div>
 					</div>

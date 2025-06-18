@@ -566,9 +566,8 @@ function TaskExporterModal({ isOpen, onClose, tasks = [], user, lang = 'fr' }) {
                                 checked={format === 'csv'}
                                 onChange={() => setFormat('csv')}
                                 className="mr-2"
-                            />
-                            <div>
-                                <div className="font-medium">{t('export.csv')}</div>
+                            />                            <div>
+                                <div className="font-medium text-gray-900">{t('export.csv')}</div>
                                 <div className="text-sm text-gray-500">
                                     {t('export.csvDesc')}
                                 </div>
@@ -583,9 +582,8 @@ function TaskExporterModal({ isOpen, onClose, tasks = [], user, lang = 'fr' }) {
                                 checked={format === 'pdf'}
                                 onChange={() => setFormat('pdf')}
                                 className="mr-2"
-                            />
-                            <div>
-                                <div className="font-medium">{t('export.pdf')}</div>
+                            />                            <div>
+                                <div className="font-medium text-gray-900">{t('export.pdf')}</div>
                                 <div className="text-sm text-gray-500">
                                     {t('export.pdfDesc')}
                                 </div>
@@ -600,9 +598,8 @@ function TaskExporterModal({ isOpen, onClose, tasks = [], user, lang = 'fr' }) {
                                 checked={format === 'productivity-report'}
                                 onChange={() => setFormat('productivity-report')}
                                 className="mr-2"
-                            />
-                            <div>
-                                <div className="font-medium">
+                            />                            <div>
+                                <div className="font-medium text-gray-900">
                                     {t('export.report')}
                                 </div>
                                 <div className="text-sm text-gray-500">
