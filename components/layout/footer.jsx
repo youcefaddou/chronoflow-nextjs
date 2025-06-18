@@ -58,18 +58,23 @@ export default function Footer() {
 							</li>
 						</ul>						<ul className="footer-list flex flex-col gap-3 min-w-[120px] sm:w-1/2 md:w-1/3 items-center sm:items-start text-center sm:text-left">
 							<li className="font-semibold text-gray-800 mb-2 text-base">{t('footer.legal')}</li>							<li>
-								<Link href="/legal-notice" className="footer-link hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 transition-all duration-300">
-									{t('footer.legalNotice')}
+								<Link href="/legal/mentions-legales" className="footer-link hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 transition-all duration-300">
+									Mentions légales
 								</Link>
 							</li>
 							<li>
-								<Link href="/privacy-policy" className="footer-link hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 transition-all duration-300">
-									{t('footer.privacyPolicy')}
+								<Link href="/legal/politique-confidentialite" className="footer-link hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 transition-all duration-300">
+									Confidentialité
 								</Link>
 							</li>
 							<li>
-								<Link href="/terms" className="footer-link hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 transition-all duration-300">
-									{t('footer.terms')}
+								<Link href="/legal/conditions-utilisation" className="footer-link hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 transition-all duration-300">
+									CGU
+								</Link>
+							</li>
+							<li>
+								<Link href="/legal/politique-cookies" className="footer-link hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 transition-all duration-300">
+									Cookies
 								</Link>
 							</li>
 						</ul>
