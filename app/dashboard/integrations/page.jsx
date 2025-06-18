@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-hot-toast'
 
-export default function IntegrationsPage() {
+function IntegrationsContent() {
   const { t } = useTranslation()
   const searchParams = useSearchParams()
   const [loading, setLoading] = useState(false)
@@ -266,13 +266,24 @@ export default function IntegrationsPage() {
                     <p className="text-green-700 text-sm mt-1">
                       Vos événements Google Calendar sont maintenant synchronisés avec ChronoFlow.
                     </p>
-                  </div>
-                </div>
+                  </div>                </div>
               </div>
             )}
           </div>
         </div>
       </div>
     </div>
+  )
+}
+
+export default function IntegrationsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    }>
+      <IntegrationsContent />
+    </Suspense>
   )
 }

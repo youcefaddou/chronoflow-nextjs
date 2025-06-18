@@ -1,13 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
 import { Button } from '../../../components/ui/button'
 import { Check, Loader2, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 
-export default function StripeSuccessPage() {
+function StripeSuccessContent() {
 	const searchParams = useSearchParams()
 	const sessionId = searchParams.get('session_id')
 	const [status, setStatus] = useState('loading') // loading, success, error
@@ -136,8 +136,7 @@ export default function StripeSuccessPage() {
 								Accéder au Dashboard Pro
 							</Button>
 						</Link>
-						<Link href="/dashboard/subscription" className="flex-1">
-							<Button variant="outline" className="w-full">
+						<Link href="/dashboard/subscription" className="flex-1">							<Button variant="outline" className="w-full">
 								Gérer mon abonnement
 							</Button>
 						</Link>
@@ -145,5 +144,17 @@ export default function StripeSuccessPage() {
 				</CardContent>
 			</Card>
 		</div>
+	)
+}
+
+export default function StripeSuccessPage() {
+	return (
+		<Suspense fallback={
+			<div className="min-h-screen bg-gray-50 flex items-center justify-center">
+				<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+			</div>
+		}>
+			<StripeSuccessContent />
+		</Suspense>
 	)
 }

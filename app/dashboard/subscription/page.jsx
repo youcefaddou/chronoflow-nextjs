@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
@@ -8,7 +8,7 @@ import { Button } from '../../../components/ui/button'
 import { Badge } from '../../../components/ui/badge'
 import { CreditCard, Check, X, Loader2 } from 'lucide-react'
 
-export default function SubscriptionPage() {
+function SubscriptionContent() {
 	const { t, i18n } = useTranslation()
 	const searchParams = useSearchParams()
 	const [isLoading, setIsLoading] = useState(false)
@@ -326,12 +326,23 @@ export default function SubscriptionPage() {
 								{t('subscription.additionalInfo')}
 							</p>
 							<p className="text-sm text-gray-600">
-								{t('subscription.cancellationInfo')}
-							</p>
+								{t('subscription.cancellationInfo')}							</p>
 						</div>
 					</CardContent>
 				</Card>
 			</div>
 		</div>
+	)
+}
+
+export default function SubscriptionPage() {
+	return (
+		<Suspense fallback={
+			<div className="min-h-screen bg-gray-50 flex items-center justify-center">
+				<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+			</div>
+		}>
+			<SubscriptionContent />
+		</Suspense>
 	)
 }
