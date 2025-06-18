@@ -48,8 +48,6 @@ const nextConfig = {
     // Désactive aussi TypeScript check si nécessaire
     ignoreBuildErrors: true,
   },
-  // Désactive la génération statique pour éviter les erreurs de prerender
-  output: 'standalone',
   images: {
     remotePatterns: [
       {

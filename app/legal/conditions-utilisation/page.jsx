@@ -141,9 +141,9 @@ export default function ConditionsUtilisationPage() {
               <p className="mb-4">
                 Pour demander un remboursement, contactez-nous à : 
                 <a href="mailto:contact.chronoflow@gmail.com" className="text-blue-600 hover:underline ml-1">
-                  contact.chronoflow@gmail.com
-                </a> 
-                avec l'objet "Demande de remboursement".
+                   contact.chronoflow@gmail.com
+                </a> {''}
+                 avec l'objet "Demande de remboursement".
               </p>
             </section>
 

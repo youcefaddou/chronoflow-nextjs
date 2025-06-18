@@ -3,10 +3,12 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'next/navigation'
+import { toast } from 'react-hot-toast'
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
 import { Button } from '../../../components/ui/button'
 import { Badge } from '../../../components/ui/badge'
 import { CreditCard, Check, X, Loader2 } from 'lucide-react'
+import CancelSubscription from '../../../components/subscription/cancel-subscription'
 
 function SubscriptionContent() {
 	const { t, i18n } = useTranslation()
@@ -48,7 +50,6 @@ function SubscriptionContent() {
 			fetchSubscriptionStatus()
 		}
 	}
-
 	// Charger le statut d'abonnement de l'utilisateur
 	const fetchSubscriptionStatus = async () => {
 		try {
@@ -62,7 +63,23 @@ function SubscriptionContent() {
 		} finally {
 			setSubscriptionLoading(false)
 		}
-	}	// Fonction pour gérer l'upgrade vers Pro
+	}
+
+	// Gérer le succès de l'annulation d'abonnement
+	const handleCancellationSuccess = (cancellationData) => {
+		// Mettre à jour les données d'abonnement localement
+		setUserSubscription(prev => ({
+			...prev,
+			status: 'canceled',
+			cancel_at_period_end: true,
+			current_period_end: cancellationData.subscription?.current_period_end
+		}))
+		
+		// Recharger les données depuis le serveur pour être sûr
+		setTimeout(() => {
+			fetchSubscriptionStatus()
+		}, 1000)
+	}// Fonction pour gérer l'upgrade vers Pro
 	const handleUpgrade = async (planName) => {
 		// Vérifier si c'est le plan Pro (en français ou anglais)
 		if (planName !== 'Pro' && planName !== t('subscription.plans.pro.name')) return
@@ -82,17 +99,17 @@ function SubscriptionContent() {
 			})
 
 			const data = await response.json()
-
+			
 			if (response.ok && data.checkoutUrl) {
 				// Rediriger vers Stripe Checkout
 				window.location.href = data.checkoutUrl
 			} else {
 				console.error('Erreur:', data.error)
-				alert('Erreur lors de la création de la session de paiement: ' + (data.error || 'Erreur inconnue'))
+				toast.error(data.error || t('subscription.payment.error', 'Erreur lors de la création de la session de paiement'))
 			}
 		} catch (error) {
 			console.error('Erreur:', error)
-			alert('Une erreur est survenue lors de la redirection vers le paiement')
+			toast.error(t('subscription.payment.redirectError', 'Une erreur est survenue lors de la redirection vers le paiement'))
 		} finally {
 			setIsLoading(false)
 			setLoadingPlan(null)
@@ -214,6 +231,15 @@ function SubscriptionContent() {
 										t('subscription.refresh')
 									)}
 								</Button>
+							</div>
+						)}
+								{/* Composant d'annulation d'abonnement - Affiché seulement si l'utilisateur a un abonnement Pro actif */}
+						{!subscriptionLoading && userSubscription && userSubscription.plan === 'pro' && userSubscription.status === 'active' && (
+							<div className="mt-6 pt-6 border-t border-gray-200">
+								<CancelSubscription 
+									subscriptionData={userSubscription}
+									onCancellationSuccess={handleCancellationSuccess}
+								/>
 							</div>
 						)}
 					</CardContent>
